@@ -4,12 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Main class that runs the program
+ * This will be the model for the program when a GUI is added
+ * 
+ * @author Max Morhardt
+ */
 public class Main {
 	
-	// Constants
+	// File name for the word list
 	private static final String WORD_LIST_NAME = "word_list.txt";
 	
-	// Instance variables
+	// Word list
 	private List<String> words;
 	
 	// Constructor
@@ -24,23 +30,42 @@ public class Main {
 			while (in.hasNext()) {
 				words.add(in.next());
 			}
+			in.close();
 		} catch (FileNotFoundException e) {
 			System.out.println("The file was not found");
 			e.printStackTrace();
 		}
 	}
 	
-	// Prints all the words (for testing)
-	private void printWords() {
-		for (int i = 0; i < words.size(); i++) {
-			System.out.println((i+1) + ": " + words.get(i));
-		}
+	// Gets a random number within a range
+	private int getRandomNumber(int min, int max) {
+	    return (int) ((Math.random() * (max - min)) + min);
+	}
+	
+	// Gets a random word from a word list
+	private String getRandomWord(List<String> words) {
+		int index = getRandomNumber(0, words.size()-1);
+		return words.get(index);
+	}
+	
+	// Allows user to make a guess
+	private String makeGuess() {
+		String guess = "";
+		do {
+			Scanner in = new Scanner(System.in);
+			guess = in.next();
+		} while (!words.contains(guess));
+		return guess;
+	}
+	
+	// Runs the program
+	private void runProgram() {
+		// TODO
+		return;
 	}
 	
 	// Main method
 	public static void main(String[] args) {
-		Main m = new Main();
-		m.scanList(WORD_LIST_NAME);
-		m.printWords();
 	}
+	
 }
