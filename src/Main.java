@@ -62,18 +62,44 @@ public class Main {
 	        System.out.println("Not in the word list");
 	        guess = in.next();
         }
-		return guess;
+		return guess.toLowerCase();
+	}
+	
+	// Checks a guess and returns a string of the result
+	// G (Green): Correct character and place
+	// Y (Yellow): Correct character wrong place
+	// X (Gray): Character is not in the word
+	private String checkGuess(String guess, String wordToGuess) {
+		String result = "";
+		for (int i = 0; i < guess.length(); i++) {
+			if (guess.charAt(i) == wordToGuess.charAt(i)) {
+				result += "G";
+			} else if (wordToGuess.contains(String.valueOf(guess.charAt(i)))) {
+				result += "Y";
+			} else {
+				result += "X";
+			}
+		}
+		return result;
 	}
 	
 	// Runs the program
 	private void runProgram() {
 		String wordToGuess = getRandomWord();
+		String guess = "";
 		int numAttempts = NUM_ATTEMPTS;
-		while (numAttempts > 0) {
+		while (numAttempts > 0 || guess.equals(wordToGuess)) {
 			System.out.println("Number of attempts remaining: " + numAttempts);
-			makeGuess();
+			guess = makeGuess();
 			numAttempts--;
-			System.out.println();
+			String result = checkGuess(guess, wordToGuess);
+			System.out.println(result + "\n");
+		}
+		
+		if (guess.equals(wordToGuess)) {
+			System.out.println("You have won!");
+		} else {
+			System.out.println("The word was: " + wordToGuess);
 		}
 	}
 	
