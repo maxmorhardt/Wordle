@@ -56,7 +56,7 @@ public class Main {
 	private String makeGuess() {
 		String guess;
 		Scanner in = new Scanner(System.in);
-		System.out.print ("Enter a guess: ");
+		System.out.print ("Enter a guess: \n");
 		guess = in.next();
 		while (!words.contains(guess)) {
 	        System.out.println("Not in the word list");
@@ -88,7 +88,7 @@ public class Main {
 		String wordToGuess = getRandomWord();
 		String guess = "";
 		int numAttempts = NUM_ATTEMPTS;
-		while (numAttempts > 0 || guess.equals(wordToGuess)) {
+		while (numAttempts > 0 && !guess.equals(wordToGuess)) {
 			System.out.println("Number of attempts remaining: " + numAttempts);
 			guess = makeGuess();
 			numAttempts--;
