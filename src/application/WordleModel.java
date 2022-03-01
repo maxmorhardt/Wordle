@@ -1,3 +1,5 @@
+package application;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -10,7 +12,7 @@ import java.util.Scanner;
  * 
  * @author Max Morhardt
  */
-public class Main {
+public class WordleModel {
 	
 	// File name for the word list
 	private static final String WORD_LIST_NAME = "word_list.txt";
@@ -20,7 +22,7 @@ public class Main {
 	private List<String> words;
 	
 	// Constructor
-	public Main() {
+	public WordleModel() {
 		words = scanList(WORD_LIST_NAME);
 	}
 	
@@ -105,7 +107,7 @@ public class Main {
 	
 	// Main method
 	public static void main(String[] args) {
-		new Main().runProgram();
+		new WordleModel().runProgram();
 	}
 	
 }
