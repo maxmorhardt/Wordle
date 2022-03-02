@@ -7,7 +7,9 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -34,11 +36,11 @@ public class WordleView extends Application {
 	private static final int WORD_LENGTH = 5;
 	private static final int NUM_GUESSES = 6; 
 
-	// Scene variables
+	// Scene variable
 	private Scene myScene;
 
 	// Grid variable
-	private Rectangle[][] grid;
+	private StackPane[][] grid;
 
 	// Controller variable
 	private WordleController controller;
@@ -47,7 +49,7 @@ public class WordleView extends Application {
 	 * Constructor for the view
 	 */
 	public WordleView() {
-		grid = new Rectangle[WORD_LENGTH][NUM_GUESSES];
+		grid = new StackPane[WORD_LENGTH][NUM_GUESSES];
 	}
 
 	/**
@@ -74,7 +76,7 @@ public class WordleView extends Application {
 	}
 
 	/**
-	 * Puts together all elements of the scene.
+	 * Puts together all elements of the scene
 	 * 
 	 * @return Scene including all the elements in a VBox
 	 */
@@ -97,7 +99,7 @@ public class WordleView extends Application {
 	}
 
 	/**
-	 * Creates a grid of rectangles for where characters will be placed.
+	 * Creates a grid of rectangles for where characters will be placed
 	 * 
 	 * @return GridPane of rectangles
 	 */
@@ -107,8 +109,10 @@ public class WordleView extends Application {
 			for (int j = 0; j < grid[i].length; j++) {
 				Rectangle currCell = new Rectangle(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 				currCell.setFill(Color.GHOSTWHITE);
-				boxes.add(currCell, i, j);
-				grid[i][j] = currCell;
+				Text text = new Text("Test");
+				StackPane stack = new StackPane(currCell, text);
+				boxes.add(stack, i, j);
+				grid[i][j] = stack;
 			}
 		}
 		boxes.setAlignment(Pos.CENTER);
@@ -117,8 +121,13 @@ public class WordleView extends Application {
 		return boxes;
 	}
 	
+	private void handleKeyboard(KeyEvent event) {
+		
+	}
+	
+	
 	/**
-	 * Sets up the GUI keyboard for use in the game.
+	 * Sets up the GUI keyboard for use in the game
 	 * 
 	 * @return GridPane of buttons
 	 */
@@ -127,7 +136,7 @@ public class WordleView extends Application {
 	}
 	
 	/**
-	 * Starts program.
+	 * Starts program
 	 * 
 	 * @param args
 	 */

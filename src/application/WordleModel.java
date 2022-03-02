@@ -20,18 +20,21 @@ public class WordleModel {
 	
 	// Words from the word list
 	private List<String> words;
+	// Secret word to guess
+	private String wordToGuess;
 	
 	/**
 	 * Constructor
 	 */
 	public WordleModel() {
 		words = scanList(WORD_LIST_NAME);
+		wordToGuess = getRandomWord();
 	}
 	
 	/**
 	 * Reads a file into a list
 	 * 
-	 * @param fileName
+	 * @param file name
 	 * @return list of strings
 	 */
 	private List<String> scanList(String fileName) {
@@ -90,7 +93,7 @@ public class WordleModel {
 	 * @param wordToGuess
 	 * @return string of corresponding hits, misses, and in the word values
 	 */
-	public String checkGuess(String guess, String wordToGuess) {
+	public String checkGuess(String guess) {
 		String result = "";
 		for (int i = 0; i < guess.length(); i++) {
 			if (guess.charAt(i) == wordToGuess.charAt(i)) {
