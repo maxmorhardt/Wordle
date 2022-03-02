@@ -6,13 +6,21 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+/**
+ * Class for the display of the Wordle game
+ * 
+ * @author Max Morhardt
+ */
 public class WordleView extends Application {
 
 	// Game scene attributes
@@ -35,10 +43,16 @@ public class WordleView extends Application {
 	// Controller variable
 	private WordleController controller;
 	
+	/**
+	 * Constructor for the view
+	 */
 	public WordleView() {
 		grid = new Rectangle[WORD_LENGTH][NUM_GUESSES];
 	}
 
+	/**
+	 * Main entry point for JavaFX applications
+	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		// Sets the title of the application
@@ -62,9 +76,12 @@ public class WordleView extends Application {
 	/**
 	 * Puts together all elements of the scene.
 	 * 
-	 * @return
+	 * @return Scene including all the elements in a VBox
 	 */
 	private Scene setupScene() {
+		// Adds text for the title of the game
+		//Text title = new Text("Wordle");
+		
 		// Sets up the boxes for text and color to be displayed
 		GridPane boxes = setupBoxes();
 		
@@ -75,29 +92,38 @@ public class WordleView extends Application {
 		root.getChildren().addAll(boxes);
 
 		// Creates scene
-		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT, Color.WHITE);
+		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT, Color.BLACK);
 		return scene;
 	}
 
 	/**
-	 * Creates a grid of rectangles.
+	 * Creates a grid of rectangles for where characters will be placed.
 	 * 
-	 * @return
+	 * @return GridPane of rectangles
 	 */
 	private GridPane setupBoxes() {
 		GridPane boxes = new GridPane();
 		for (int i = 0; i < grid.length; i++) {
 			for (int j = 0; j < grid[i].length; j++) {
 				Rectangle currCell = new Rectangle(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-				currCell.setFill(Color.GRAY);
+				currCell.setFill(Color.GHOSTWHITE);
 				boxes.add(currCell, i, j);
 				grid[i][j] = currCell;
 			}
 		}
-		boxes.setAlignment(Pos.TOP_CENTER);
+		boxes.setAlignment(Pos.CENTER);
 		boxes.setHgap(CELL_SPACING);
 		boxes.setVgap(CELL_SPACING);
 		return boxes;
+	}
+	
+	/**
+	 * Sets up the GUI keyboard for use in the game.
+	 * 
+	 * @return GridPane of buttons
+	 */
+	private GridPane setupKeyboard() {
+		return null;
 	}
 	
 	/**
