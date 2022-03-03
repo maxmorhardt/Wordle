@@ -30,10 +30,19 @@ import javafx.util.Duration;
 
 /**
  * Class for the display of the Wordle game
+ * 
  * TODO
  * Make a lot of the game logic in here happen in the model
  * Add virtual keyboard
  * Add the Wordle title
+ * Make separate method for title once its more realistic
+ * Fix magic numbers
+ * Add win/loss
+ * Scene transition for win/loss
+ * Add play again
+ * 
+ * IDEAS
+ * New class for stackpane instead of putting it all into creating rectangles
  * 
  * @author Max Morhardt
  */
@@ -44,13 +53,14 @@ public class WordleView extends Application {
 	private final int MILLISECOND_DELAY = 1000 / FRAMES_PER_SECOND;
 	private final int SCENE_WIDTH = 700;
 	private final int SCENE_HEIGHT = 775;
-	private final int RECTANGLE_SIZE = 50;
 	private final int RECTANGLE_SPACING = 20;
 	private final int WORD_LENGTH = 5;
 	private final int NUM_GUESSES = 6;
+	private final int LINE_STROKE_WIDTH = 2;
+	private final int TITLE_TOP_MARGIN = 20;
+	private final int TITLE_BOTTOM_MARGIN = 10;
+	private final int LINE_BOTTOM_MARGIN = 30;
 	private final Color BACKGROUND_COLOR = Color.rgb(18,18,19);
-	private final Color STARTING_COLOR = Color.rgb(18,18,19);
-	private final Color BORDER_STROKE_COLOR = Color.rgb(58,58,60);
 	private final Color LINE_COLOR = Color.rgb(54,54,56);
 	private final Color TEXT_COLOR = Color.WHITE;
 	private final Color HIT_COLOR = Color.rgb(83,141,78);
@@ -59,8 +69,7 @@ public class WordleView extends Application {
 	
 
 	// Instance variables
-	private Rectangle[][] gridRectangles;
-	private Text[][] gridText;
+	private WordleRectangle[][] gridWordleRectangles;
 	private List<Character> guessCharacterList;
 	private int guessCount;
 	private WordleController controller;
@@ -69,10 +78,8 @@ public class WordleView extends Application {
 	 * Constructor
 	 */
 	public WordleView() {
-		// Rectangles within the grid pane
-		gridRectangles = new Rectangle[WORD_LENGTH][NUM_GUESSES];
-		// Text on top of each rectangle
-		gridText = new Text[WORD_LENGTH][NUM_GUESSES];
+		// Wordle rectangles within the grid pane
+		gridWordleRectangles = new WordleRectangle[WORD_LENGTH][NUM_GUESSES];
 		// List of all the characters that are in the current guesses
 		guessCharacterList = new ArrayList<>();
 		// Number of guesses attempted
@@ -103,26 +110,15 @@ public class WordleView extends Application {
 
 	/**
 	 * Puts together all elements of the scene
-	 * TODO
-	 * Make separate method for title once its more realistic
-	 * Fix magic numbers
 	 * 
 	 * @return Scene including all the elements in a VBox
 	 */
 	private Scene setupScene() {
 		// Adds text for the title of the game
-		Text title = new Text("WORDLE");
-		title.setFill(TEXT_COLOR);
-		title.setFont(Font.font("Helvetica", FontWeight.BOLD, 35));
+		Text title = setupTitle();
 		
 		// Line between the title and grid
-		Line line = new Line();
-		line.setStartX(0);
-		line.setEndX(SCENE_WIDTH);
-		line.setStartY(80);
-		line.setEndY(80);
-		line.setStroke(LINE_COLOR);
-		line.setStrokeWidth(2);
+		Line line = setupLine();
 		
 		// Sets up the grid for text and color to be displayed
 		GridPane grid = setupGrid();
@@ -130,13 +126,39 @@ public class WordleView extends Application {
 		// Sets up root to align all elements
 		VBox root = new VBox();
 		root.setAlignment(Pos.TOP_CENTER);
-		VBox.setMargin(title, new Insets(20, 0, 10, 0));
-		VBox.setMargin(line, new Insets(0, 0, 30, 0));
+		VBox.setMargin(title, new Insets(TITLE_TOP_MARGIN, 0, TITLE_BOTTOM_MARGIN, 0));
+		VBox.setMargin(line, new Insets(0, 0, LINE_BOTTOM_MARGIN, 0));
 		root.getChildren().addAll(title, line, grid);
 
 		// Creates scene
 		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT, BACKGROUND_COLOR);
 		return scene;
+	}
+	
+	/**
+	 * Creates the title in the GUI for the game
+	 * 
+	 * @return title
+	 */
+	private Text setupTitle() {
+		Text title = new Text("WORDLE");
+		title.setFill(TEXT_COLOR);
+		title.setFont(Font.font("Helvetica", FontWeight.BOLD, 35));
+		return title;
+	}
+	
+	/**
+	 * Create a horizontal line for the GUI
+	 * 
+	 * @return line
+	 */
+	private Line setupLine() {
+		Line line = new Line();
+		line.setStartX(0);
+		line.setEndX(SCENE_WIDTH);
+		line.setStroke(LINE_COLOR);
+		line.setStrokeWidth(LINE_STROKE_WIDTH);
+		return line;
 	}
 	
 	/**
@@ -147,24 +169,12 @@ public class WordleView extends Application {
 	private GridPane setupGrid() {
 		// Grid plane to hold the rectangle and text stack panes 
 		GridPane grid = new GridPane();
-		for (int i = 0; i < gridRectangles.length; i++) {
-			for (int j = 0; j < gridRectangles[i].length; j++) {
-				// Create a rectangle, set it to its starting color, and add them to an array
-				Rectangle rect = new Rectangle(i * RECTANGLE_SIZE, j * RECTANGLE_SIZE, RECTANGLE_SIZE, RECTANGLE_SIZE);
-				rect.setFill(STARTING_COLOR);
-				rect.setStroke(BORDER_STROKE_COLOR);
-				rect.setStrokeType(StrokeType.INSIDE);
-				gridRectangles[i][j] = rect;
-				
-				// Create text and add it to an array
-				Text text = new Text();
-				text.setFill(TEXT_COLOR);
-				text.setFont(Font.font("Helvetica", FontWeight.BOLD, 15));
-				gridText[i][j] = text;
-				
-				// Create a stack pane with the text over the rectangle and add to a grid pane of them
-				StackPane stack = new StackPane(rect, text);
-				grid.add(stack, i, j);
+		for (int i = 0; i < gridWordleRectangles.length; i++) {
+			for (int j = 0; j < gridWordleRectangles[i].length; j++) {
+				WordleRectangle wr = new WordleRectangle(i, j);
+				StackPane rectWithText = wr.getRectWithText();
+				gridWordleRectangles[i][j] = wr;
+				grid.add(rectWithText, i, j);
 			}
 		}
 		// Aligns the grid in the center and adds space between the rectangles
@@ -283,11 +293,11 @@ public class WordleView extends Application {
 	 */
 	private void updateLetters() {
 		for (int i = 0; i < WORD_LENGTH; i++) {
-			Text currText = gridText[i][guessCount];
+			WordleRectangle wr = gridWordleRectangles[i][guessCount];
 			if (guessCharacterList.size() - 1 < i) {
-				currText.setText("");
+				wr.setText("");
 			} else {
-				currText.setText(("" + guessCharacterList.get(i)).toUpperCase());
+				wr.setText(("" + guessCharacterList.get(i)).toUpperCase());
 			}
 		}
 	}
@@ -299,12 +309,13 @@ public class WordleView extends Application {
 	 */
 	private void updateRectangleColors(String guessResult) {
 		for (int i = 0; i < WORD_LENGTH; i++) {
+			WordleRectangle wr = gridWordleRectangles[i][guessCount];
 			if (guessResult.charAt(i) == 'G') {
-				gridRectangles[i][guessCount].setFill(HIT_COLOR);
+				wr.getRect().setFill(HIT_COLOR);
 			} else if (guessResult.charAt(i) == 'Y') {
-				gridRectangles[i][guessCount].setFill(CONTAINS_COLOR);
+				wr.getRect().setFill(CONTAINS_COLOR);
 			} else {
-				gridRectangles[i][guessCount].setFill(MISS_COLOR);
+				wr.getRect().setFill(MISS_COLOR);
 			}
 		}
 	}
