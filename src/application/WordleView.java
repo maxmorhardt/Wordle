@@ -233,9 +233,13 @@ public class WordleView extends Application {
 	
 	
 	private void updateLetters() {
-		for (int i = 0; i < guess.size(); i++) {
+		for (int i = 0; i < WORD_LENGTH; i++) {
 			Text currText = text[i][guessCount];
-			currText.setText("" + guess.get(i));
+			if (guess.size() - 1 < i) {
+				currText.setText("");
+			} else {
+				currText.setText("" + guess.get(i));
+			}
 		}
 	}
 	
