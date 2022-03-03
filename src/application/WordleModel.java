@@ -79,7 +79,7 @@ public class WordleModel {
 	 * 
 	 * @return if the guess is in the word list
 	 */
-	private boolean isInWordList(String guess) {
+	public boolean isInWordList(String guess) {
 		if (words.contains(guess)) {
 			return true;
 		}

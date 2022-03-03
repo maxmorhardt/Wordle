@@ -68,7 +68,7 @@ public class WordleView extends Application {
 		primaryStage.show();
 
 		// Game loop
-		KeyFrame frame = new KeyFrame(Duration.millis(MILLISECOND_DELAY));
+		KeyFrame frame = new KeyFrame(Duration.millis(MILLISECOND_DELAY), e -> step(MILLISECOND_DELAY));
 		Timeline animation = new Timeline();
 		animation.setCycleCount(Timeline.INDEFINITE);
 		animation.getKeyFrames().add(frame);
@@ -109,7 +109,7 @@ public class WordleView extends Application {
 			for (int j = 0; j < grid[i].length; j++) {
 				Rectangle currCell = new Rectangle(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 				currCell.setFill(Color.GHOSTWHITE);
-				Text text = new Text("Test");
+				Text text = new Text();
 				StackPane stack = new StackPane(currCell, text);
 				boxes.add(stack, i, j);
 				grid[i][j] = stack;
@@ -121,18 +121,28 @@ public class WordleView extends Application {
 		return boxes;
 	}
 	
-	private void handleKeyboard(KeyEvent event) {
-		
-	}
-	
-	
 	/**
 	 * Sets up the GUI keyboard for use in the game
 	 * 
 	 * @return GridPane of buttons
 	 */
 	private GridPane setupKeyboard() {
+		// Focus on normal keyboard input and game functionality first
 		return null;
+	}
+	
+	
+	private void handleKeyboardInput() {
+		
+	}
+	
+	/**
+	 * What will be called in the game loop
+	 * 
+	 * @param elapsedTime
+	 */
+	private void step(int elapsedTime) {
+		
 	}
 	
 	/**
