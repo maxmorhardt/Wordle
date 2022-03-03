@@ -1,8 +1,12 @@
 package application;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -34,7 +38,7 @@ public class WordleView extends Application {
 	private static final int CELL_SPACING = 20;
 	private static final int ROOT_SPACING = 10;
 	private static final int WORD_LENGTH = 5;
-	private static final int NUM_GUESSES = 6; 
+	private static final int NUM_GUESSES = 6;
 
 	// Scene variable
 	private Scene myScene;
@@ -45,11 +49,15 @@ public class WordleView extends Application {
 	// Controller variable
 	private WordleController controller;
 	
+	// Current guess list
+	private List<Character> currGuess;
+	
 	/**
-	 * Constructor for the view
+	 * Constructor
 	 */
 	public WordleView() {
 		grid = new StackPane[WORD_LENGTH][NUM_GUESSES];
+		currGuess = new ArrayList<>();
 	}
 
 	/**
@@ -95,6 +103,7 @@ public class WordleView extends Application {
 
 		// Creates scene
 		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT, Color.BLACK);
+		handleKeyboardInput(scene);
 		return scene;
 	}
 
@@ -121,19 +130,16 @@ public class WordleView extends Application {
 		return boxes;
 	}
 	
-	/**
-	 * Sets up the GUI keyboard for use in the game
-	 * 
-	 * @return GridPane of buttons
-	 */
-	private GridPane setupKeyboard() {
-		// Focus on normal keyboard input and game functionality first
-		return null;
-	}
-	
-	
-	private void handleKeyboardInput() {
-		
+	private void handleKeyboardInput(Scene scene) {
+		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent event) {
+				switch (event.getCode()) {
+				case A: if (currGuess.size() < 5) currGuess.add('a');
+				}
+				
+			}
+		});
 	}
 	
 	/**
@@ -142,7 +148,9 @@ public class WordleView extends Application {
 	 * @param elapsedTime
 	 */
 	private void step(int elapsedTime) {
-		
+		if (currGuess.size() > 0) {
+			System.out.println("Working");
+		}
 	}
 	
 	/**

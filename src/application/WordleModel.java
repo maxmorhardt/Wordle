@@ -15,8 +15,6 @@ public class WordleModel {
 	
 	// File name for the word list
 	private static final String WORD_LIST_NAME = "word_list.txt";
-	// Number of guess attempts
-	private static final int NUM_ATTEMPTS = 6;
 	
 	// Words from the word list
 	private List<String> words;
@@ -90,7 +88,6 @@ public class WordleModel {
 	 * Checks a guess and returns a string of the result
 	 * 
 	 * @param guess
-	 * @param wordToGuess
 	 * @return string of corresponding hits, misses, and in the word values
 	 */
 	public String checkGuess(String guess) {
