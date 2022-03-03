@@ -16,6 +16,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -37,7 +38,9 @@ public class WordleView extends Application {
 	private final int ROOT_SPACING = 10;
 	private final int WORD_LENGTH = 5;
 	private final int NUM_GUESSES = 6;
+	private final Color BACKGROUND_COLOR = Color.rgb(18,18,19);
 	private final Color STARTING_COLOR = Color.rgb(18,18,19);
+	private final Color STROKE_COLOR = Color.rgb(58,58,60);
 	private final Color TEXT_COLOR = Color.WHITE;
 	private final Color HIT_COLOR = Color.rgb(83,141,78);
 	private final Color CONTAINS_COLOR = Color.rgb(181,159,59);
@@ -108,7 +111,7 @@ public class WordleView extends Application {
 		root.getChildren().addAll(grid);
 
 		// Creates scene
-		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT, Color.BLACK);
+		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT, BACKGROUND_COLOR);
 		return scene;
 	}
 
@@ -123,17 +126,19 @@ public class WordleView extends Application {
 		for (int i = 0; i < gridRectangles.length; i++) {
 			for (int j = 0; j < gridRectangles[i].length; j++) {
 				// Create a rectangle, set it to its starting color, and add them to an array
-				Rectangle currBox = new Rectangle(i * RECTANGLE_SIZE, j * RECTANGLE_SIZE, RECTANGLE_SIZE, RECTANGLE_SIZE);
-				currBox.setFill(STARTING_COLOR);
-				gridRectangles[i][j] = currBox;
+				Rectangle rect = new Rectangle(i * RECTANGLE_SIZE, j * RECTANGLE_SIZE, RECTANGLE_SIZE, RECTANGLE_SIZE);
+				rect.setFill(STARTING_COLOR);
+				rect.setStroke(STROKE_COLOR);
+				rect.setStrokeType(StrokeType.INSIDE);
+				gridRectangles[i][j] = rect;
 				
 				// Create text and add it to an array
-				Text currText = new Text();
-				currText.setFill(TEXT_COLOR);
-				gridText[i][j] = currText;
+				Text text = new Text();
+				text.setFill(TEXT_COLOR);
+				gridText[i][j] = text;
 				
 				// Create a stack pane with the text over the rectangle and add to a grid pane of them
-				StackPane stack = new StackPane(currBox, currText);
+				StackPane stack = new StackPane(rect, text);
 				grid.add(stack, i, j);
 			}
 		}
