@@ -239,33 +239,26 @@ public class WordleView extends Application {
 	}
 	
 	
+	/**
+	 * Updates the letters on the GUI
+	 */
 	private void updateLetters() {
 		for (int i = 0; i < WORD_LENGTH; i++) {
 			Text currText = gridText[i][guessCount];
 			if (guessCharacterList.size() - 1 < i) {
 				currText.setText("");
 			} else {
-				currText.setText("" + guessCharacterList.get(i));
+				currText.setText(("" + guessCharacterList.get(i)).toUpperCase());
 			}
 		}
 	}
 	
-	private void submitGuess() {
-		String currGuess = "";
-		for (Character c : guessCharacterList) {
-			currGuess += c;
-		}
-		boolean isValid = controller.isInWordList(currGuess);
-		if (isValid) {
-			String guessResult = controller.checkGuess(currGuess);
-			updateBoxes(guessResult);
-			guessCount++;
-		} else {
-			// Somehow alert "Not in word list"
-		}
-	}
-	
-	private void updateBoxes(String guessResult) {
+	/**
+	 * Updates the colors of the rectangle
+	 * 
+	 * @param guess result
+	 */
+	private void updateRectangleColors(String guessResult) {
 		for (int i = 0; i < WORD_LENGTH; i++) {
 			if (guessResult.charAt(i) == 'G') {
 				gridRectangles[i][guessCount].setFill(Color.GREEN);
@@ -274,6 +267,29 @@ public class WordleView extends Application {
 			} else {
 				gridRectangles[i][guessCount].setFill(Color.GRAY);
 			}
+		}
+	}
+	
+	/**
+	 * Submits a guess to the controller to see if its valid
+	 */
+	private void submitGuess() {
+		// Convert list to string
+		String guess = "";
+		for (Character c : guessCharacterList) {
+			guess += c;
+		}
+		
+		// If the guess is valid update GUI with result and add a guess
+		boolean isValid = controller.isInWordList(guess);
+		if (isValid) {
+			String guessResult = controller.checkGuess(guess);
+			updateRectangleColors(guessResult);
+			guessCount++;
+			
+		// If its not valid alert the player
+		} else {
+			// Somehow alert "Not in word list"
 		}
 	}
 	
