@@ -24,6 +24,7 @@ import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -88,7 +89,7 @@ public class WordleView extends Application {
 		// Create scene and display
 		Scene scene = setupScene();
 		handleKeyboardInput(scene);
-		primaryStage.setTitle("Wordle");
+		primaryStage.setTitle("Wordle Clone - Max Morhardt");
 		primaryStage.setScene(scene);
 		primaryStage.show();
 
@@ -103,7 +104,6 @@ public class WordleView extends Application {
 	/**
 	 * Puts together all elements of the scene
 	 * TODO
-	 * Find replacement for BorderPane
 	 * Make separate method for title once its more realistic
 	 * Fix magic numbers
 	 * 
@@ -111,19 +111,28 @@ public class WordleView extends Application {
 	 */
 	private Scene setupScene() {
 		// Adds text for the title of the game
-		Text title = new Text("Wordle");
+		Text title = new Text("WORDLE");
 		title.setFill(TEXT_COLOR);
-		title.setFont(Font.font("Helvetica", FontWeight.EXTRA_BOLD, 35));
+		title.setFont(Font.font("Helvetica", FontWeight.BOLD, 35));
+		
+		// Line between the title and grid
+		Line line = new Line();
+		line.setStartX(0);
+		line.setEndX(SCENE_WIDTH);
+		line.setStartY(80);
+		line.setEndY(80);
+		line.setStroke(LINE_COLOR);
+		line.setStrokeWidth(2);
 		
 		// Sets up the grid for text and color to be displayed
 		GridPane grid = setupGrid();
 		
 		// Sets up root to align all elements
-		BorderPane root = new BorderPane();
-		BorderPane.setAlignment(title, Pos.TOP_CENTER);
-		BorderPane.setMargin(title, new Insets(25, 0, 0, 0));
-		root.setTop(title);
-		root.setCenter(grid);
+		VBox root = new VBox();
+		root.setAlignment(Pos.TOP_CENTER);
+		VBox.setMargin(title, new Insets(20, 0, 10, 0));
+		VBox.setMargin(line, new Insets(0, 0, 30, 0));
+		root.getChildren().addAll(title, line, grid);
 
 		// Creates scene
 		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT, BACKGROUND_COLOR);
@@ -150,6 +159,7 @@ public class WordleView extends Application {
 				// Create text and add it to an array
 				Text text = new Text();
 				text.setFill(TEXT_COLOR);
+				text.setFont(Font.font("Helvetica", FontWeight.BOLD, 15));
 				gridText[i][j] = text;
 				
 				// Create a stack pane with the text over the rectangle and add to a grid pane of them
