@@ -8,21 +8,31 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Separator;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 /**
  * Class for the display of the Wordle game
+ * TODO
+ * Make a lot of the game logic in here happen in the model
+ * Add virtual keyboard
+ * Add the Wordle title
  * 
  * @author Max Morhardt
  */
@@ -31,16 +41,16 @@ public class WordleView extends Application {
 	// Game scene attributes
 	private final int FRAMES_PER_SECOND = 30;
 	private final int MILLISECOND_DELAY = 1000 / FRAMES_PER_SECOND;
-	private final int SCENE_WIDTH = 900;
-	private final int SCENE_HEIGHT = 850;
+	private final int SCENE_WIDTH = 700;
+	private final int SCENE_HEIGHT = 775;
 	private final int RECTANGLE_SIZE = 50;
 	private final int RECTANGLE_SPACING = 20;
-	private final int ROOT_SPACING = 10;
 	private final int WORD_LENGTH = 5;
 	private final int NUM_GUESSES = 6;
 	private final Color BACKGROUND_COLOR = Color.rgb(18,18,19);
 	private final Color STARTING_COLOR = Color.rgb(18,18,19);
-	private final Color STROKE_COLOR = Color.rgb(58,58,60);
+	private final Color BORDER_STROKE_COLOR = Color.rgb(58,58,60);
+	private final Color LINE_COLOR = Color.rgb(54,54,56);
 	private final Color TEXT_COLOR = Color.WHITE;
 	private final Color HIT_COLOR = Color.rgb(83,141,78);
 	private final Color CONTAINS_COLOR = Color.rgb(181,159,59);
@@ -75,12 +85,10 @@ public class WordleView extends Application {
 	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		// Sets the title of the application
-		primaryStage.setTitle("Wordle");
-		
 		// Create scene and display
 		Scene scene = setupScene();
 		handleKeyboardInput(scene);
+		primaryStage.setTitle("Wordle");
 		primaryStage.setScene(scene);
 		primaryStage.show();
 
@@ -94,27 +102,34 @@ public class WordleView extends Application {
 
 	/**
 	 * Puts together all elements of the scene
+	 * TODO
+	 * Find replacement for BorderPane
+	 * Make separate method for title once its more realistic
+	 * Fix magic numbers
 	 * 
 	 * @return Scene including all the elements in a VBox
 	 */
 	private Scene setupScene() {
 		// Adds text for the title of the game
-		//Text title = new Text("Wordle");
+		Text title = new Text("Wordle");
+		title.setFill(TEXT_COLOR);
+		title.setFont(Font.font("Helvetica", FontWeight.EXTRA_BOLD, 35));
 		
 		// Sets up the grid for text and color to be displayed
 		GridPane grid = setupGrid();
 		
 		// Sets up root to align all elements
-		VBox root = new VBox();
-		root.setAlignment(Pos.CENTER);
-		root.setPadding(new Insets(ROOT_SPACING, ROOT_SPACING, ROOT_SPACING, ROOT_SPACING));
-		root.getChildren().addAll(grid);
+		BorderPane root = new BorderPane();
+		BorderPane.setAlignment(title, Pos.TOP_CENTER);
+		BorderPane.setMargin(title, new Insets(25, 0, 0, 0));
+		root.setTop(title);
+		root.setCenter(grid);
 
 		// Creates scene
 		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT, BACKGROUND_COLOR);
 		return scene;
 	}
-
+	
 	/**
 	 * Creates a grid of rectangles for where characters will be placed
 	 * 
@@ -128,7 +143,7 @@ public class WordleView extends Application {
 				// Create a rectangle, set it to its starting color, and add them to an array
 				Rectangle rect = new Rectangle(i * RECTANGLE_SIZE, j * RECTANGLE_SIZE, RECTANGLE_SIZE, RECTANGLE_SIZE);
 				rect.setFill(STARTING_COLOR);
-				rect.setStroke(STROKE_COLOR);
+				rect.setStroke(BORDER_STROKE_COLOR);
 				rect.setStrokeType(StrokeType.INSIDE);
 				gridRectangles[i][j] = rect;
 				
@@ -151,6 +166,8 @@ public class WordleView extends Application {
 	
 	/**
 	 * Handles all of the possible key events for the game
+	 * TODO
+	 * Send these events to the model instead
 	 * 
 	 * @param scene for the game
 	 */

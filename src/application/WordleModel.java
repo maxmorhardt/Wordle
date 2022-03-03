@@ -14,7 +14,7 @@ import java.util.Scanner;
 public class WordleModel {
 	
 	// File name for the word list
-	private static final String WORD_LIST_NAME = "word_list.txt";
+	private static final String WORD_LIST_NAME = "resources/word_list.txt";
 	
 	// Instance variables
 	private List<String> words;
