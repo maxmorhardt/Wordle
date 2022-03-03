@@ -37,6 +37,12 @@ public class WordleView extends Application {
 	private final int ROOT_SPACING = 10;
 	private final int WORD_LENGTH = 5;
 	private final int NUM_GUESSES = 6;
+	private final Color STARTING_COLOR = Color.rgb(18,18,19);
+	private final Color TEXT_COLOR = Color.WHITE;
+	private final Color HIT_COLOR = Color.rgb(83,141,78);
+	private final Color CONTAINS_COLOR = Color.rgb(181,159,59);
+	private final Color MISS_COLOR = Color.rgb(58,58,60);
+	
 
 	// Instance variables
 	private Rectangle[][] gridRectangles;
@@ -118,11 +124,12 @@ public class WordleView extends Application {
 			for (int j = 0; j < gridRectangles[i].length; j++) {
 				// Create a rectangle, set it to its starting color, and add them to an array
 				Rectangle currBox = new Rectangle(i * RECTANGLE_SIZE, j * RECTANGLE_SIZE, RECTANGLE_SIZE, RECTANGLE_SIZE);
-				currBox.setFill(Color.GHOSTWHITE);
+				currBox.setFill(STARTING_COLOR);
 				gridRectangles[i][j] = currBox;
 				
 				// Create text and add it to an array
 				Text currText = new Text();
+				currText.setFill(TEXT_COLOR);
 				gridText[i][j] = currText;
 				
 				// Create a stack pane with the text over the rectangle and add to a grid pane of them
@@ -261,11 +268,11 @@ public class WordleView extends Application {
 	private void updateRectangleColors(String guessResult) {
 		for (int i = 0; i < WORD_LENGTH; i++) {
 			if (guessResult.charAt(i) == 'G') {
-				gridRectangles[i][guessCount].setFill(Color.GREEN);
+				gridRectangles[i][guessCount].setFill(HIT_COLOR);
 			} else if (guessResult.charAt(i) == 'Y') {
-				gridRectangles[i][guessCount].setFill(Color.YELLOW);
+				gridRectangles[i][guessCount].setFill(CONTAINS_COLOR);
 			} else {
-				gridRectangles[i][guessCount].setFill(Color.GRAY);
+				gridRectangles[i][guessCount].setFill(MISS_COLOR);
 			}
 		}
 	}
@@ -285,6 +292,7 @@ public class WordleView extends Application {
 		if (isValid) {
 			String guessResult = controller.checkGuess(guess);
 			updateRectangleColors(guessResult);
+			guessCharacterList.clear();
 			guessCount++;
 			
 		// If its not valid alert the player
