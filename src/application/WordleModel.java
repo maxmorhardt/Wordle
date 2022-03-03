@@ -16,17 +16,18 @@ public class WordleModel {
 	// File name for the word list
 	private static final String WORD_LIST_NAME = "word_list.txt";
 	
-	// Words from the word list
+	// Instance variables
 	private List<String> words;
-	// Secret word to guess
-	private String wordToGuess;
+	private String secretWord;
 	
 	/**
 	 * Constructor
 	 */
 	public WordleModel() {
+		// Words from the word list
 		words = scanList(WORD_LIST_NAME);
-		wordToGuess = getRandomWord();
+		// Secret word to guess
+		secretWord = getRandomWord();
 	}
 	
 	/**
@@ -87,16 +88,19 @@ public class WordleModel {
 	/**
 	 * Checks a guess and returns a string of the result
 	 * 
+	 * TODO
+	 * Fix repeats with duplicate letters when a hit is already found and it marks yellow
+	 * 
 	 * @param guess
 	 * @return string of corresponding hits, misses, and in the word values
 	 */
 	public String checkGuess(String guess) {
 		String result = "";
 		for (int i = 0; i < guess.length(); i++) {
-			if (guess.charAt(i) == wordToGuess.charAt(i)) {
+			if (guess.charAt(i) == secretWord.charAt(i)) {
 				// G (Green): Correct character and place
 				result += "G";
-			} else if (wordToGuess.contains(String.valueOf(guess.charAt(i)))) {
+			} else if (secretWord.contains(String.valueOf(guess.charAt(i)))) {
 				// Y (Yellow): Correct character wrong place
 				result += "Y";
 			} else {

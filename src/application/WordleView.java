@@ -32,52 +32,47 @@ public class WordleView extends Application {
 	private final int MILLISECOND_DELAY = 1000 / FRAMES_PER_SECOND;
 	private final int SCENE_WIDTH = 900;
 	private final int SCENE_HEIGHT = 850;
-	private final int CELL_SIZE = 50;
-	private final int CELL_SPACING = 20;
+	private final int RECTANGLE_SIZE = 50;
+	private final int RECTANGLE_SPACING = 20;
 	private final int ROOT_SPACING = 10;
 	private final int WORD_LENGTH = 5;
 	private final int NUM_GUESSES = 6;
 
-	// Scene variable
-	private Scene myScene;
-
-	// Grid variable
-	private Rectangle[][] boxes;
-	private Text[][] text;
-
-	// Controller variable
-	private WordleController controller;
-	
-	// Current guess list
-	private List<Character> guess;
-	
+	// Instance variables
+	private Rectangle[][] gridRectangles;
+	private Text[][] gridText;
+	private List<Character> guessCharacterList;
 	private int guessCount;
+	private WordleController controller;
 	
 	/**
 	 * Constructor
 	 */
 	public WordleView() {
-		boxes = new Rectangle[WORD_LENGTH][NUM_GUESSES];
-		text = new Text[WORD_LENGTH][NUM_GUESSES];
-		guess = new ArrayList<>();
+		// Rectangles within the grid pane
+		gridRectangles = new Rectangle[WORD_LENGTH][NUM_GUESSES];
+		// Text on top of each rectangle
+		gridText = new Text[WORD_LENGTH][NUM_GUESSES];
+		// List of all the characters that are in the current guesses
+		guessCharacterList = new ArrayList<>();
+		// Number of guesses attempted
 		guessCount = 0;
+		// Controller
 		controller = new WordleController();
 	}
 
 	/**
-	 * Main entry point for JavaFX applications
+	 * Main entry point
 	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		// Sets the title of the application
 		primaryStage.setTitle("Wordle");
 		
-		// Scene
-		myScene = setupScene();
-		handleKeyboardInput(myScene);
-
-		// Shows scene
-		primaryStage.setScene(myScene);
+		// Create scene and display
+		Scene scene = setupScene();
+		handleKeyboardInput(scene);
+		primaryStage.setScene(scene);
 		primaryStage.show();
 
 		// Game loop
@@ -97,7 +92,7 @@ public class WordleView extends Application {
 		// Adds text for the title of the game
 		//Text title = new Text("Wordle");
 		
-		// Sets up the boxes for text and color to be displayed
+		// Sets up the grid for text and color to be displayed
 		GridPane grid = setupGrid();
 		
 		// Sets up root to align all elements
@@ -117,112 +112,125 @@ public class WordleView extends Application {
 	 * @return GridPane of rectangles
 	 */
 	private GridPane setupGrid() {
+		// Grid plane to hold the rectangle and text stack panes 
 		GridPane grid = new GridPane();
-		for (int i = 0; i < boxes.length; i++) {
-			for (int j = 0; j < boxes[i].length; j++) {
-				Rectangle currBox = new Rectangle(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+		for (int i = 0; i < gridRectangles.length; i++) {
+			for (int j = 0; j < gridRectangles[i].length; j++) {
+				// Create a rectangle, set it to its starting color, and add them to an array
+				Rectangle currBox = new Rectangle(i * RECTANGLE_SIZE, j * RECTANGLE_SIZE, RECTANGLE_SIZE, RECTANGLE_SIZE);
 				currBox.setFill(Color.GHOSTWHITE);
-				boxes[i][j] = currBox;
+				gridRectangles[i][j] = currBox;
+				
+				// Create text and add it to an array
 				Text currText = new Text();
-				text[i][j] = currText;
+				gridText[i][j] = currText;
+				
+				// Create a stack pane with the text over the rectangle and add to a grid pane of them
 				StackPane stack = new StackPane(currBox, currText);
 				grid.add(stack, i, j);
 			}
 		}
+		// Aligns the grid in the center and adds space between the rectangles
 		grid.setAlignment(Pos.CENTER);
-		grid.setHgap(CELL_SPACING);
-		grid.setVgap(CELL_SPACING);
+		grid.setHgap(RECTANGLE_SPACING);
+		grid.setVgap(RECTANGLE_SPACING);
 		return grid;
 	}
 	
+	/**
+	 * Handles all of the possible key events for the game
+	 * 
+	 * @param scene for the game
+	 */
 	private void handleKeyboardInput(Scene scene) {
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
 				switch (event.getCode()) {
 				case A: 
-					if (guess.size() < 5) guess.add('a');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('a');
 					break;
 				case B: 
-					if (guess.size() < 5) guess.add('b');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('b');
 					break;
 				case C: 
-					if (guess.size() < 5) guess.add('c');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('c');
 					break;
 				case D: 
-					if (guess.size() < 5) guess.add('d');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('d');
 					break;
 				case E: 
-					if (guess.size() < 5) guess.add('e');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('e');
 					break;
 				case F: 
-					if (guess.size() < 5) guess.add('f');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('f');
 					break;
 				case G: 
-					if (guess.size() < 5) guess.add('g');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('g');
 					break;
 				case H: 
-					if (guess.size() < 5) guess.add('h');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('h');
 					break;
 				case I: 
-					if (guess.size() < 5) guess.add('i');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('i');
 					break;
 				case J: 
-					if (guess.size() < 5) guess.add('j');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('j');
 					break;
 				case K: 
-					if (guess.size() < 5) guess.add('k');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('k');
 					break;
 				case L: 
-					if (guess.size() < 5) guess.add('l');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('l');
 					break;
 				case M: 
-					if (guess.size() < 5) guess.add('m');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('m');
 					break;
 				case N: 
-					if (guess.size() < 5) guess.add('n');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('n');
 					break;
 				case O: 
-					if (guess.size() < 5) guess.add('o');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('o');
 					break;
 				case P: 
-					if (guess.size() < 5) guess.add('p');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('p');
 					break;
 				case Q: 
-					if (guess.size() < 5) guess.add('q');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('q');
 					break;
 				case R: 
-					if (guess.size() < 5) guess.add('r');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('r');
 					break;
 				case S: 
-					if (guess.size() < 5) guess.add('s');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('s');
 					break;
 				case T: 
-					if (guess.size() < 5) guess.add('t');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('t');
 					break;
 				case U: 
-					if (guess.size() < 5) guess.add('u');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('u');
 					break;
 				case V: 
-					if (guess.size() < 5) guess.add('v');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('v');
 					break;
 				case W: 
-					if (guess.size() < 5) guess.add('w');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('w');
 					break;
 				case X: 
-					if (guess.size() < 5) guess.add('x');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('x');
 					break;
 				case Y: 
-					if (guess.size() < 5) guess.add('y');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('y');
 					break;
 				case Z: 
-					if (guess.size() < 5) guess.add('z');
+					if (guessCharacterList.size() < 5) guessCharacterList.add('z');
 					break;
 				case ENTER: 
-					if (guess.size() == 5) submitGuess();
+					if (guessCharacterList.size() == 5) submitGuess();
 					break;
 				case BACK_SPACE: 
-					if (guess.size() > 0) guess.remove(guess.size()-1);
+					int finalIndex = guessCharacterList.size()-1;
+					if (guessCharacterList.size() > 0) guessCharacterList.remove(finalIndex);
 					break;
 				}
 				
@@ -233,38 +241,38 @@ public class WordleView extends Application {
 	
 	private void updateLetters() {
 		for (int i = 0; i < WORD_LENGTH; i++) {
-			Text currText = text[i][guessCount];
-			if (guess.size() - 1 < i) {
+			Text currText = gridText[i][guessCount];
+			if (guessCharacterList.size() - 1 < i) {
 				currText.setText("");
 			} else {
-				currText.setText("" + guess.get(i));
+				currText.setText("" + guessCharacterList.get(i));
 			}
 		}
 	}
 	
 	private void submitGuess() {
 		String currGuess = "";
-		for (Character c : guess) {
+		for (Character c : guessCharacterList) {
 			currGuess += c;
 		}
 		boolean isValid = controller.isInWordList(currGuess);
 		if (isValid) {
-			String checkedGuess = controller.checkGuess(currGuess);
-			updateBoxes(checkedGuess);
+			String guessResult = controller.checkGuess(currGuess);
+			updateBoxes(guessResult);
 			guessCount++;
 		} else {
 			// Somehow alert "Not in word list"
 		}
 	}
 	
-	private void updateBoxes(String checkedGuess) {
+	private void updateBoxes(String guessResult) {
 		for (int i = 0; i < WORD_LENGTH; i++) {
-			if (checkedGuess.charAt(i) == 'G') {
-				boxes[i][guessCount].setFill(Color.GREEN);
-			} else if (checkedGuess.charAt(i) == 'Y') {
-				boxes[i][guessCount].setFill(Color.YELLOW);
+			if (guessResult.charAt(i) == 'G') {
+				gridRectangles[i][guessCount].setFill(Color.GREEN);
+			} else if (guessResult.charAt(i) == 'Y') {
+				gridRectangles[i][guessCount].setFill(Color.YELLOW);
 			} else {
-				boxes[i][guessCount].setFill(Color.GRAY);
+				gridRectangles[i][guessCount].setFill(Color.GRAY);
 			}
 		}
 	}
