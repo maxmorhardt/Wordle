@@ -70,6 +70,7 @@ public class WordleView extends Application {
 		
 		// Scene
 		myScene = setupScene();
+		handleKeyboardInput(myScene);
 
 		// Shows scene
 		primaryStage.setScene(myScene);
@@ -103,7 +104,6 @@ public class WordleView extends Application {
 
 		// Creates scene
 		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT, Color.BLACK);
-		handleKeyboardInput(scene);
 		return scene;
 	}
 
@@ -135,11 +135,98 @@ public class WordleView extends Application {
 			@Override
 			public void handle(KeyEvent event) {
 				switch (event.getCode()) {
-				case A: if (currGuess.size() < 5) currGuess.add('a');
+				case A: 
+					if (currGuess.size() < 5) currGuess.add('a');
+					break;
+				case B: 
+					if (currGuess.size() < 5) currGuess.add('b');
+					break;
+				case C: 
+					if (currGuess.size() < 5) currGuess.add('c');
+					break;
+				case D: 
+					if (currGuess.size() < 5) currGuess.add('d');
+					break;
+				case E: 
+					if (currGuess.size() < 5) currGuess.add('e');
+					break;
+				case F: 
+					if (currGuess.size() < 5) currGuess.add('f');
+					break;
+				case G: 
+					if (currGuess.size() < 5) currGuess.add('g');
+					break;
+				case H: 
+					if (currGuess.size() < 5) currGuess.add('h');
+					break;
+				case I: 
+					if (currGuess.size() < 5) currGuess.add('i');
+					break;
+				case J: 
+					if (currGuess.size() < 5) currGuess.add('j');
+					break;
+				case K: 
+					if (currGuess.size() < 5) currGuess.add('k');
+					break;
+				case L: 
+					if (currGuess.size() < 5) currGuess.add('l');
+					break;
+				case M: 
+					if (currGuess.size() < 5) currGuess.add('m');
+					break;
+				case N: 
+					if (currGuess.size() < 5) currGuess.add('n');
+					break;
+				case O: 
+					if (currGuess.size() < 5) currGuess.add('o');
+					break;
+				case P: 
+					if (currGuess.size() < 5) currGuess.add('p');
+					break;
+				case Q: 
+					if (currGuess.size() < 5) currGuess.add('q');
+					break;
+				case R: 
+					if (currGuess.size() < 5) currGuess.add('r');
+					break;
+				case S: 
+					if (currGuess.size() < 5) currGuess.add('s');
+					break;
+				case T: 
+					if (currGuess.size() < 5) currGuess.add('t');
+					break;
+				case U: 
+					if (currGuess.size() < 5) currGuess.add('u');
+					break;
+				case V: 
+					if (currGuess.size() < 5) currGuess.add('v');
+					break;
+				case W: 
+					if (currGuess.size() < 5) currGuess.add('w');
+					break;
+				case X: 
+					if (currGuess.size() < 5) currGuess.add('x');
+					break;
+				case Y: 
+					if (currGuess.size() < 5) currGuess.add('y');
+					break;
+				case Z: 
+					if (currGuess.size() < 5) currGuess.add('z');
+					break;
+				case ENTER: 
+					if (currGuess.size() == 5) submitGuess();
+					break;
+				case BACK_SPACE: 
+					if (currGuess.size() > 0) currGuess.remove(currGuess.size()-1);
+					break;
 				}
 				
 			}
 		});
+	}
+	
+	private void submitGuess() {
+		System.out.println("Here");
 	}
 	
 	/**
@@ -148,8 +235,8 @@ public class WordleView extends Application {
 	 * @param elapsedTime
 	 */
 	private void step(int elapsedTime) {
-		if (currGuess.size() > 0) {
-			System.out.println("Working");
+		for (Character c : currGuess) {
+			System.out.println(currGuess.size());
 		}
 	}
 	
