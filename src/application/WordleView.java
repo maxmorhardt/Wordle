@@ -6,11 +6,9 @@ import java.util.List;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
@@ -30,7 +28,7 @@ import javafx.util.Duration;
 public class WordleView extends Application {
 
 	// Game scene attributes
-	private final int FRAMES_PER_SECOND = 5;
+	private final int FRAMES_PER_SECOND = 30;
 	private final int MILLISECOND_DELAY = 1000 / FRAMES_PER_SECOND;
 	private final int SCENE_WIDTH = 900;
 	private final int SCENE_HEIGHT = 850;
@@ -63,6 +61,7 @@ public class WordleView extends Application {
 		text = new Text[WORD_LENGTH][NUM_GUESSES];
 		guess = new ArrayList<>();
 		guessCount = 0;
+		controller = new WordleController();
 	}
 
 	/**
@@ -244,7 +243,30 @@ public class WordleView extends Application {
 	}
 	
 	private void submitGuess() {
-		
+		String currGuess = "";
+		for (Character c : guess) {
+			currGuess += c;
+		}
+		boolean isValid = controller.isInWordList(currGuess);
+		if (isValid) {
+			String checkedGuess = controller.checkGuess(currGuess);
+			updateBoxes(checkedGuess);
+			guessCount++;
+		} else {
+			// Somehow alert "Not in word list"
+		}
+	}
+	
+	private void updateBoxes(String checkedGuess) {
+		for (int i = 0; i < WORD_LENGTH; i++) {
+			if (checkedGuess.charAt(i) == 'G') {
+				boxes[i][guessCount].setFill(Color.GREEN);
+			} else if (checkedGuess.charAt(i) == 'Y') {
+				boxes[i][guessCount].setFill(Color.YELLOW);
+			} else {
+				boxes[i][guessCount].setFill(Color.GRAY);
+			}
+		}
 	}
 	
 	/**
