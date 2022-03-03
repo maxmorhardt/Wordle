@@ -6,18 +6,18 @@ import java.util.List;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -30,34 +30,39 @@ import javafx.util.Duration;
 public class WordleView extends Application {
 
 	// Game scene attributes
-	private static final int FRAMES_PER_SECOND = 5;
-	private static final int MILLISECOND_DELAY = 1000 / FRAMES_PER_SECOND;
-	private static final int SCENE_WIDTH = 900;
-	private static final int SCENE_HEIGHT = 850;
-	private static final int CELL_SIZE = 50;
-	private static final int CELL_SPACING = 20;
-	private static final int ROOT_SPACING = 10;
-	private static final int WORD_LENGTH = 5;
-	private static final int NUM_GUESSES = 6;
+	private final int FRAMES_PER_SECOND = 5;
+	private final int MILLISECOND_DELAY = 1000 / FRAMES_PER_SECOND;
+	private final int SCENE_WIDTH = 900;
+	private final int SCENE_HEIGHT = 850;
+	private final int CELL_SIZE = 50;
+	private final int CELL_SPACING = 20;
+	private final int ROOT_SPACING = 10;
+	private final int WORD_LENGTH = 5;
+	private final int NUM_GUESSES = 6;
 
 	// Scene variable
 	private Scene myScene;
 
 	// Grid variable
-	private StackPane[][] grid;
+	private Rectangle[][] boxes;
+	private Text[][] text;
 
 	// Controller variable
 	private WordleController controller;
 	
 	// Current guess list
-	private List<Character> currGuess;
+	private List<Character> guess;
+	
+	private int guessCount;
 	
 	/**
 	 * Constructor
 	 */
 	public WordleView() {
-		grid = new StackPane[WORD_LENGTH][NUM_GUESSES];
-		currGuess = new ArrayList<>();
+		boxes = new Rectangle[WORD_LENGTH][NUM_GUESSES];
+		text = new Text[WORD_LENGTH][NUM_GUESSES];
+		guess = new ArrayList<>();
+		guessCount = 0;
 	}
 
 	/**
@@ -94,13 +99,13 @@ public class WordleView extends Application {
 		//Text title = new Text("Wordle");
 		
 		// Sets up the boxes for text and color to be displayed
-		GridPane boxes = setupBoxes();
+		GridPane grid = setupGrid();
 		
 		// Sets up root to align all elements
 		VBox root = new VBox();
 		root.setAlignment(Pos.CENTER);
 		root.setPadding(new Insets(ROOT_SPACING, ROOT_SPACING, ROOT_SPACING, ROOT_SPACING));
-		root.getChildren().addAll(boxes);
+		root.getChildren().addAll(grid);
 
 		// Creates scene
 		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT, Color.BLACK);
@@ -112,22 +117,23 @@ public class WordleView extends Application {
 	 * 
 	 * @return GridPane of rectangles
 	 */
-	private GridPane setupBoxes() {
-		GridPane boxes = new GridPane();
-		for (int i = 0; i < grid.length; i++) {
-			for (int j = 0; j < grid[i].length; j++) {
-				Rectangle currCell = new Rectangle(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-				currCell.setFill(Color.GHOSTWHITE);
-				Text text = new Text();
-				StackPane stack = new StackPane(currCell, text);
-				boxes.add(stack, i, j);
-				grid[i][j] = stack;
+	private GridPane setupGrid() {
+		GridPane grid = new GridPane();
+		for (int i = 0; i < boxes.length; i++) {
+			for (int j = 0; j < boxes[i].length; j++) {
+				Rectangle currBox = new Rectangle(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+				currBox.setFill(Color.GHOSTWHITE);
+				boxes[i][j] = currBox;
+				Text currText = new Text();
+				text[i][j] = currText;
+				StackPane stack = new StackPane(currBox, currText);
+				grid.add(stack, i, j);
 			}
 		}
-		boxes.setAlignment(Pos.CENTER);
-		boxes.setHgap(CELL_SPACING);
-		boxes.setVgap(CELL_SPACING);
-		return boxes;
+		grid.setAlignment(Pos.CENTER);
+		grid.setHgap(CELL_SPACING);
+		grid.setVgap(CELL_SPACING);
+		return grid;
 	}
 	
 	private void handleKeyboardInput(Scene scene) {
@@ -136,88 +142,88 @@ public class WordleView extends Application {
 			public void handle(KeyEvent event) {
 				switch (event.getCode()) {
 				case A: 
-					if (currGuess.size() < 5) currGuess.add('a');
+					if (guess.size() < 5) guess.add('a');
 					break;
 				case B: 
-					if (currGuess.size() < 5) currGuess.add('b');
+					if (guess.size() < 5) guess.add('b');
 					break;
 				case C: 
-					if (currGuess.size() < 5) currGuess.add('c');
+					if (guess.size() < 5) guess.add('c');
 					break;
 				case D: 
-					if (currGuess.size() < 5) currGuess.add('d');
+					if (guess.size() < 5) guess.add('d');
 					break;
 				case E: 
-					if (currGuess.size() < 5) currGuess.add('e');
+					if (guess.size() < 5) guess.add('e');
 					break;
 				case F: 
-					if (currGuess.size() < 5) currGuess.add('f');
+					if (guess.size() < 5) guess.add('f');
 					break;
 				case G: 
-					if (currGuess.size() < 5) currGuess.add('g');
+					if (guess.size() < 5) guess.add('g');
 					break;
 				case H: 
-					if (currGuess.size() < 5) currGuess.add('h');
+					if (guess.size() < 5) guess.add('h');
 					break;
 				case I: 
-					if (currGuess.size() < 5) currGuess.add('i');
+					if (guess.size() < 5) guess.add('i');
 					break;
 				case J: 
-					if (currGuess.size() < 5) currGuess.add('j');
+					if (guess.size() < 5) guess.add('j');
 					break;
 				case K: 
-					if (currGuess.size() < 5) currGuess.add('k');
+					if (guess.size() < 5) guess.add('k');
 					break;
 				case L: 
-					if (currGuess.size() < 5) currGuess.add('l');
+					if (guess.size() < 5) guess.add('l');
 					break;
 				case M: 
-					if (currGuess.size() < 5) currGuess.add('m');
+					if (guess.size() < 5) guess.add('m');
 					break;
 				case N: 
-					if (currGuess.size() < 5) currGuess.add('n');
+					if (guess.size() < 5) guess.add('n');
 					break;
 				case O: 
-					if (currGuess.size() < 5) currGuess.add('o');
+					if (guess.size() < 5) guess.add('o');
 					break;
 				case P: 
-					if (currGuess.size() < 5) currGuess.add('p');
+					if (guess.size() < 5) guess.add('p');
 					break;
 				case Q: 
-					if (currGuess.size() < 5) currGuess.add('q');
+					if (guess.size() < 5) guess.add('q');
 					break;
 				case R: 
-					if (currGuess.size() < 5) currGuess.add('r');
+					if (guess.size() < 5) guess.add('r');
 					break;
 				case S: 
-					if (currGuess.size() < 5) currGuess.add('s');
+					if (guess.size() < 5) guess.add('s');
 					break;
 				case T: 
-					if (currGuess.size() < 5) currGuess.add('t');
+					if (guess.size() < 5) guess.add('t');
 					break;
 				case U: 
-					if (currGuess.size() < 5) currGuess.add('u');
+					if (guess.size() < 5) guess.add('u');
 					break;
 				case V: 
-					if (currGuess.size() < 5) currGuess.add('v');
+					if (guess.size() < 5) guess.add('v');
 					break;
 				case W: 
-					if (currGuess.size() < 5) currGuess.add('w');
+					if (guess.size() < 5) guess.add('w');
 					break;
 				case X: 
-					if (currGuess.size() < 5) currGuess.add('x');
+					if (guess.size() < 5) guess.add('x');
 					break;
 				case Y: 
-					if (currGuess.size() < 5) currGuess.add('y');
+					if (guess.size() < 5) guess.add('y');
 					break;
 				case Z: 
-					if (currGuess.size() < 5) currGuess.add('z');
+					if (guess.size() < 5) guess.add('z');
 					break;
 				case ENTER: 
-					if (currGuess.size() == 5) submitGuess();
+					if (guess.size() == 5) submitGuess();
 					break;
 				case BACK_SPACE: 
-					if (currGuess.size() > 0) currGuess.remove(currGuess.size()-1);
+					if (guess.size() > 0) guess.remove(guess.size()-1);
 					break;
 				}
 				
@@ -225,8 +231,16 @@ public class WordleView extends Application {
 		});
 	}
 	
+	
+	private void updateLetters() {
+		for (int i = 0; i < guess.size(); i++) {
+			Text currText = text[i][guessCount];
+			currText.setText("" + guess.get(i));
+		}
+	}
+	
 	private void submitGuess() {
-		System.out.println("Here");
+		
 	}
 	
 	/**
@@ -235,9 +249,7 @@ public class WordleView extends Application {
 	 * @param elapsedTime
 	 */
 	private void step(int elapsedTime) {
-		for (Character c : currGuess) {
-			System.out.println(currGuess.size());
-		}
+		updateLetters();
 	}
 	
 	/**
