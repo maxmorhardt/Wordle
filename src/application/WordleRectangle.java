@@ -15,21 +15,39 @@ import javafx.scene.text.Text;
  */
 public class WordleRectangle {
 	
+	// Attributes
 	private final int RECTANGLE_SIZE = 50;
 	private final Color BORDER_STROKE_COLOR = Color.rgb(58,58,60);
 	private final Color STARTING_COLOR = Color.rgb(18,18,19);
 	private final Color TEXT_COLOR = Color.WHITE;
 	
+	// Variables
 	private Rectangle rect;
 	private Text text;
 	private StackPane rectWithText;
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param xPos of rectangle
+	 * @param yPos of rectangle
+	 */
 	public WordleRectangle(int x, int y) {
+		// Rectangle
 		rect = setupRectangle(x, y);
+		// Text
 		text = setupText();
+		// Combined rectangle and text
 		rectWithText = setupStackPane(rect, text);
 	}
 	
+	/**
+	 * Creates a rectangle with certain attributes
+	 * 
+	 * @param xPos of rectangle
+	 * @param yPos of rectangle
+	 * @return rectangle
+	 */
 	private Rectangle setupRectangle(int x, int y) {
 		Rectangle rect = new Rectangle(x * RECTANGLE_SIZE, y * RECTANGLE_SIZE, RECTANGLE_SIZE, RECTANGLE_SIZE);
 		rect.setFill(STARTING_COLOR);
@@ -38,6 +56,11 @@ public class WordleRectangle {
 		return rect;
 	}
 	
+	/**
+	 * Creates text with certain attributes
+	 * 
+	 * @return text
+	 */
 	private Text setupText() {
 		Text text = new Text();
 		text.setFill(TEXT_COLOR);
@@ -45,34 +68,43 @@ public class WordleRectangle {
 		return text;
 	}
 	
+	/**
+	 * Combined rectangle and text
+	 * 
+	 * @param rect
+	 * @param text
+	 * @return stackpane of rect and text
+	 */
 	private StackPane setupStackPane(Rectangle rect, Text text) {
 		StackPane sp = new StackPane(rect, text);
 		return sp;
 	}
 
-	public Rectangle getRect() {
-		return rect;
+	/**
+	 * Sets a rectangle to a certain color
+	 * 
+	 * @param color
+	 */
+	public void setRectFill(Color color ) {
+		this.rect.setFill(color);
 	}
-
-	public void setRect(Rectangle rect) {
-		this.rect = rect;
-	}
-
-	public Text getText() {
-		return text;
-	}
-
+	
+	/**
+	 * Sets the string of the text
+	 * 
+	 * @param text
+	 */
 	public void setText(String text) {
 		this.text.setText(text);
 	}
 
+	/**
+	 * Gets the combined rectangle and text
+	 * 
+	 * @return
+	 */
 	public StackPane getRectWithText() {
 		return rectWithText;
 	}
-
-	public void setRectWithText(StackPane rectAndText) {
-		this.rectWithText = rectAndText;
-	}
-	
 	
 }

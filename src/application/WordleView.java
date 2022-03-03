@@ -41,8 +41,6 @@ import javafx.util.Duration;
  * Scene transition for win/loss
  * Add play again
  * 
- * IDEAS
- * New class for stackpane instead of putting it all into creating rectangles
  * 
  * @author Max Morhardt
  */
@@ -311,11 +309,11 @@ public class WordleView extends Application {
 		for (int i = 0; i < WORD_LENGTH; i++) {
 			WordleRectangle wr = gridWordleRectangles[i][guessCount];
 			if (guessResult.charAt(i) == 'G') {
-				wr.getRect().setFill(HIT_COLOR);
+				wr.setRectFill(HIT_COLOR);
 			} else if (guessResult.charAt(i) == 'Y') {
-				wr.getRect().setFill(CONTAINS_COLOR);
+				wr.setRectFill(CONTAINS_COLOR);
 			} else {
-				wr.getRect().setFill(MISS_COLOR);
+				wr.setRectFill(MISS_COLOR);
 			}
 		}
 	}
