@@ -2,30 +2,21 @@ package application;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Separator;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -49,8 +40,8 @@ public class WordleView {
 	private final int TITLE_BOTTOM_MARGIN = 10;
 	private final int LINE_BOTTOM_MARGIN = 30;
 	private final int TITLE_FONT_SIZE = 35;
-	private final String TITLE_FONT = "Helvetica";
-	private final FontWeight TITLE_FONT_WEIGHT = FontWeight.BOLD;
+	private final String FONT = "Helvetica";
+	private final FontWeight FONT_WEIGHT = FontWeight.BOLD;
 	private final Color BACKGROUND_COLOR = Color.rgb(18,18,19);
 	private final Color LINE_COLOR = Color.rgb(54,54,56);
 	private final Color TEXT_COLOR = Color.WHITE;
@@ -67,7 +58,6 @@ public class WordleView {
 	private WordleController controller;
 	private boolean won;
 	private boolean lost;
-	private boolean hasSwitchedScenes;
 	
 	/**
 	 * Constructor
@@ -93,6 +83,7 @@ public class WordleView {
 	 */
 	public void start(Stage primaryStage) {
 		// Create scene and display
+		System.out.println(controller.getSecretWord());
 		Scene scene = setupMainScene();
 		handleKeyboardInput(scene);
 		
@@ -143,7 +134,7 @@ public class WordleView {
 	private Text setupTitle() {
 		Text title = new Text("WORDLE");
 		title.setFill(TEXT_COLOR);
-		title.setFont(Font.font(TITLE_FONT, TITLE_FONT_WEIGHT, TITLE_FONT_SIZE));
+		title.setFont(Font.font(FONT, FONT_WEIGHT, TITLE_FONT_SIZE));
 		return title;
 	}
 	
@@ -336,7 +327,7 @@ public class WordleView {
 			updateRectangleColors(guessResult);
 			
 			// Check for win
-			if (guess.equals(guessResult)) {
+			if (guess.equals(controller.getSecretWord())) {
 				won = true;
 			} else if (guessCount == 5) {
 				lost = true;
@@ -350,6 +341,9 @@ public class WordleView {
 		}
 	}
 	
+	/**
+	 * Removes grid and adds losing text
+	 */
 	private void handleLoss() {
 		// Kinda a dumb solution to handling the call is step()
 		if (lost) {
@@ -357,15 +351,36 @@ public class WordleView {
 			
 			Text lostText = new Text("You Lost");
 			lostText.setFill(TEXT_COLOR);
-			lostText.setFont(Font.font(TITLE_FONT, TITLE_FONT_WEIGHT, 50));
+			lostText.setFont(Font.font(FONT, FONT_WEIGHT, 50));
 			
 			Text secretWord = new Text("The word was: " + controller.getSecretWord());
 			secretWord.setFill(TEXT_COLOR);
-			secretWord.setFont(Font.font(TITLE_FONT, TITLE_FONT_WEIGHT, TITLE_FONT_SIZE));
+			secretWord.setFont(Font.font(FONT, FONT_WEIGHT, TITLE_FONT_SIZE));
 			
 			root.getChildren().remove(2);
 			root.getChildren().addAll(lostText, secretWord);
 			VBox.setMargin(lostText, new Insets(100, 0, 60, 0));
+		}
+	}
+	
+	/**
+	 * Removes grid and adds winning text
+	 */
+	private void handleWin() {
+		if (won) {
+			won = false;
+			
+			Text congrats = new Text("Congratulations");
+			congrats.setFill(TEXT_COLOR);
+			congrats.setFont(Font.font(FONT, FONT_WEIGHT, TITLE_FONT_SIZE));
+			
+			Text youWon = new Text("You Won!");
+			youWon.setFill(TEXT_COLOR);
+			youWon.setFont(Font.font(FONT, FONT_WEIGHT, TITLE_FONT_SIZE));
+			
+			root.getChildren().remove(2);
+			root.getChildren().addAll(congrats, youWon);
+			VBox.setMargin(congrats, new Insets(100, 0, 60, 0));
 		}
 	}
 	
@@ -376,7 +391,9 @@ public class WordleView {
 	 */
 	private void step(int elapsedTime) {
 		updateLetters();
-		if (lost) {
+		if (won) {
+			handleWin();
+		} else if (lost) {
 			handleLoss();
 		}
 	}

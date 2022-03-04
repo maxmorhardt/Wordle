@@ -16,8 +16,8 @@ import javafx.scene.text.Text;
 public class WordleRectangle {
 	
 	// Attributes
-	private final int RECTANGLE_SIZE = 50;
 	private final int FONT_SIZE = 15;
+	private final int RECTANGLE_SIZE = 50;
 	private final String FONT = "Helvetica";
 	private final FontWeight FONT_WEIGHT = FontWeight.BOLD;
 	private final StrokeType INSIDE_STROKE = StrokeType.INSIDE;
