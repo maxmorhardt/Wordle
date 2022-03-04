@@ -71,9 +71,9 @@ public class WordleRectangle {
 	/**
 	 * Combined rectangle and text
 	 * 
-	 * @param rect
+	 * @param rectangle
 	 * @param text
-	 * @return stackpane of rect and text
+	 * @return stackpane of rectangle and text
 	 */
 	private StackPane setupStackPane(Rectangle rect, Text text) {
 		StackPane sp = new StackPane(rect, text);
@@ -101,7 +101,7 @@ public class WordleRectangle {
 	/**
 	 * Gets the combined rectangle and text
 	 * 
-	 * @return
+	 * @return stackpane of rectangle and text
 	 */
 	public StackPane getRectWithText() {
 		return rectWithText;

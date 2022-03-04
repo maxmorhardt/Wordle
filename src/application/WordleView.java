@@ -31,27 +31,16 @@ import javafx.util.Duration;
 /**
  * Class for the display of the Wordle game
  * 
- * TODO
- * Make a lot of the game logic in here happen in the model
- * Add virtual keyboard
- * Add the Wordle title
- * Make separate method for title once its more realistic
- * Fix magic numbers
- * Add win/loss
- * Scene transition for win/loss
- * Add play again
- * 
- * 
  * @author Max Morhardt
  */
-public class WordleView extends Application {
+public class WordleView {
 
 	// Game scene attributes
 	private final int FRAMES_PER_SECOND = 30;
 	private final int MILLISECOND_DELAY = 1000 / FRAMES_PER_SECOND;
 	private final int SCENE_WIDTH = 700;
 	private final int SCENE_HEIGHT = 775;
-	private final int RECTANGLE_SPACING = 20;
+	private final int GRID_SPACING = 20;
 	private final int WORD_LENGTH = 5;
 	private final int NUM_GUESSES = 6;
 	private final int LINE_STROKE_WIDTH = 2;
@@ -71,6 +60,8 @@ public class WordleView extends Application {
 	private List<Character> guessCharacterList;
 	private int guessCount;
 	private WordleController controller;
+	private boolean won;
+	private boolean lost;
 	
 	/**
 	 * Constructor
@@ -84,13 +75,15 @@ public class WordleView extends Application {
 		guessCount = 0;
 		// Controller
 		controller = new WordleController();
+		// Variables for ending the game
+		won = false;
+		lost = false;
 	}
 
 	/**
 	 * Main entry point
 	 */
-	@Override
-	public void start(Stage primaryStage) throws Exception {
+	public void start(Stage primaryStage) {
 		// Create scene and display
 		Scene scene = setupScene();
 		handleKeyboardInput(scene);
@@ -177,15 +170,13 @@ public class WordleView extends Application {
 		}
 		// Aligns the grid in the center and adds space between the rectangles
 		grid.setAlignment(Pos.CENTER);
-		grid.setHgap(RECTANGLE_SPACING);
-		grid.setVgap(RECTANGLE_SPACING);
+		grid.setHgap(GRID_SPACING);
+		grid.setVgap(GRID_SPACING);
 		return grid;
 	}
 	
 	/**
 	 * Handles all of the possible key events for the game
-	 * TODO
-	 * Send these events to the model instead
 	 * 
 	 * @param scene for the game
 	 */
@@ -193,94 +184,95 @@ public class WordleView extends Application {
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
-				switch (event.getCode()) {
-				case A: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('a');
-					break;
-				case B: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('b');
-					break;
-				case C: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('c');
-					break;
-				case D: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('d');
-					break;
-				case E: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('e');
-					break;
-				case F: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('f');
-					break;
-				case G: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('g');
-					break;
-				case H: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('h');
-					break;
-				case I: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('i');
-					break;
-				case J: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('j');
-					break;
-				case K: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('k');
-					break;
-				case L: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('l');
-					break;
-				case M: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('m');
-					break;
-				case N: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('n');
-					break;
-				case O: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('o');
-					break;
-				case P: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('p');
-					break;
-				case Q: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('q');
-					break;
-				case R: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('r');
-					break;
-				case S: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('s');
-					break;
-				case T: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('t');
-					break;
-				case U: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('u');
-					break;
-				case V: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('v');
-					break;
-				case W: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('w');
-					break;
-				case X: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('x');
-					break;
-				case Y: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('y');
-					break;
-				case Z: 
-					if (guessCharacterList.size() < 5) guessCharacterList.add('z');
-					break;
-				case ENTER: 
-					if (guessCharacterList.size() == 5) submitGuess();
-					break;
-				case BACK_SPACE: 
-					int finalIndex = guessCharacterList.size()-1;
-					if (guessCharacterList.size() > 0) guessCharacterList.remove(finalIndex);
-					break;
+				if (!won || !lost) {
+					switch (event.getCode()) {
+					case A: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('a');
+						break;
+					case B: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('b');
+						break;
+					case C: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('c');
+						break;
+					case D: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('d');
+						break;
+					case E: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('e');
+						break;
+					case F: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('f');
+						break;
+					case G: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('g');
+						break;
+					case H: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('h');
+						break;
+					case I: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('i');
+						break;
+					case J: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('j');
+						break;
+					case K: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('k');
+						break;
+					case L: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('l');
+						break;
+					case M: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('m');
+						break;
+					case N: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('n');
+						break;
+					case O: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('o');
+						break;
+					case P: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('p');
+						break;
+					case Q: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('q');
+						break;
+					case R: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('r');
+						break;
+					case S: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('s');
+						break;
+					case T: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('t');
+						break;
+					case U: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('u');
+						break;
+					case V: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('v');
+						break;
+					case W: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('w');
+						break;
+					case X: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('x');
+						break;
+					case Y: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('y');
+						break;
+					case Z: 
+						if (guessCharacterList.size() < 5) guessCharacterList.add('z');
+						break;
+					case ENTER: 
+						if (guessCharacterList.size() == 5) submitGuess();
+						break;
+					case BACK_SPACE: 
+						int finalIndex = guessCharacterList.size()-1;
+						if (guessCharacterList.size() > 0) guessCharacterList.remove(finalIndex);
+						break;
+					}
 				}
-				
 			}
 		});
 	}
@@ -333,12 +325,19 @@ public class WordleView extends Application {
 		if (isValid) {
 			String guessResult = controller.checkGuess(guess);
 			updateRectangleColors(guessResult);
-			guessCharacterList.clear();
-			guessCount++;
 			
-		// If its not valid alert the player
-		} else {
-			// Somehow alert "Not in word list"
+			// Check for win
+			if (guess.equals(guessResult)) {
+				won = true;
+			} else if (guessCount == 5) {
+				lost = true;
+			}
+			
+			// Dont increment if game is over
+			if (!won && !lost) {
+				guessCharacterList.clear();
+				guessCount++;
+			}
 		}
 	}
 	
@@ -349,15 +348,6 @@ public class WordleView extends Application {
 	 */
 	private void step(int elapsedTime) {
 		updateLetters();
-	}
-	
-	/**
-	 * Starts program
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		launch(args);
 	}
 
 }

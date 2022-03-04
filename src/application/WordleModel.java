@@ -19,6 +19,7 @@ public class WordleModel {
 	// Instance variables
 	private List<String> words;
 	private String secretWord;
+	private int guessCount;
 	
 	/**
 	 * Constructor
@@ -28,6 +29,8 @@ public class WordleModel {
 		words = scanList(WORD_LIST_NAME);
 		// Secret word to guess
 		secretWord = getRandomWord();
+		// Number of guess attempted
+		guessCount = 0;
 	}
 	
 	/**
@@ -88,9 +91,6 @@ public class WordleModel {
 	/**
 	 * Checks a guess and returns a string of the result
 	 * 
-	 * TODO
-	 * Fix repeats with duplicate letters when a hit is already found and it marks yellow
-	 * 
 	 * @param guess
 	 * @return string of corresponding hits, misses, and in the word values
 	 */
@@ -110,5 +110,4 @@ public class WordleModel {
 		}
 		return result;
 	}
-	
 }
