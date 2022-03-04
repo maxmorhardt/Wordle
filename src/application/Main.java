@@ -10,6 +10,9 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
 	
+	/**
+	 * Main entry for the program
+	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		WordleView wv = new WordleView();

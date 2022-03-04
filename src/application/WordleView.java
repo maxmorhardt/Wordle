@@ -10,6 +10,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Separator;
 import javafx.scene.input.KeyEvent;
@@ -56,6 +57,7 @@ public class WordleView {
 	
 
 	// Instance variables
+	private VBox root;
 	private WordleRectangle[][] gridWordleRectangles;
 	private List<Character> guessCharacterList;
 	private int guessCount;
@@ -67,6 +69,8 @@ public class WordleView {
 	 * Constructor
 	 */
 	public WordleView() {
+		// Root for the scene
+		root = new VBox();
 		// Wordle rectangles within the grid pane
 		gridWordleRectangles = new WordleRectangle[WORD_LENGTH][NUM_GUESSES];
 		// List of all the characters that are in the current guesses
@@ -85,8 +89,9 @@ public class WordleView {
 	 */
 	public void start(Stage primaryStage) {
 		// Create scene and display
-		Scene scene = setupScene();
+		Scene scene = setupMainScene();
 		handleKeyboardInput(scene);
+		
 		primaryStage.setTitle("Wordle Clone - Max Morhardt");
 		primaryStage.setScene(scene);
 		primaryStage.show();
@@ -104,7 +109,7 @@ public class WordleView {
 	 * 
 	 * @return Scene including all the elements in a VBox
 	 */
-	private Scene setupScene() {
+	private Scene setupMainScene() {
 		// Adds text for the title of the game
 		Text title = setupTitle();
 		
@@ -115,13 +120,22 @@ public class WordleView {
 		GridPane grid = setupGrid();
 		
 		// Sets up root to align all elements
-		VBox root = new VBox();
+		root = new VBox();
 		root.setAlignment(Pos.TOP_CENTER);
 		VBox.setMargin(title, new Insets(TITLE_TOP_MARGIN, 0, TITLE_BOTTOM_MARGIN, 0));
 		VBox.setMargin(line, new Insets(0, 0, LINE_BOTTOM_MARGIN, 0));
 		root.getChildren().addAll(title, line, grid);
 
 		// Creates scene
+		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT, BACKGROUND_COLOR);
+		return scene;
+	}
+	
+	private Scene setupLossScene() {
+		Text lossText = new Text("You Lost");
+		
+		
+		
 		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT, BACKGROUND_COLOR);
 		return scene;
 	}
@@ -348,6 +362,9 @@ public class WordleView {
 	 */
 	private void step(int elapsedTime) {
 		updateLetters();
+		if (lost) {
+			root.getChildren().clear();
+		}
 	}
 
 }

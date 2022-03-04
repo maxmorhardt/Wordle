@@ -14,23 +14,20 @@ import java.util.Scanner;
 public class WordleModel {
 	
 	// File name for the word list
-	private static final String WORD_LIST_NAME = "resources/word_list.txt";
+	private static final String WORD_LIST_PATH = "resources/word_list.txt";
 	
 	// Instance variables
 	private List<String> words;
 	private String secretWord;
-	private int guessCount;
 	
 	/**
 	 * Constructor
 	 */
 	public WordleModel() {
 		// Words from the word list
-		words = scanList(WORD_LIST_NAME);
+		words = scanList(WORD_LIST_PATH);
 		// Secret word to guess
 		secretWord = getRandomWord();
-		// Number of guess attempted
-		guessCount = 0;
 	}
 	
 	/**
@@ -110,4 +107,5 @@ public class WordleModel {
 		}
 		return result;
 	}
+	
 }

@@ -17,6 +17,10 @@ public class WordleRectangle {
 	
 	// Attributes
 	private final int RECTANGLE_SIZE = 50;
+	private final int FONT_SIZE = 15;
+	private final String FONT = "Helvetica";
+	private final FontWeight FONT_WEIGHT = FontWeight.BOLD;
+	private final StrokeType INSIDE_STROKE = StrokeType.INSIDE;
 	private final Color BORDER_STROKE_COLOR = Color.rgb(58,58,60);
 	private final Color STARTING_COLOR = Color.rgb(18,18,19);
 	private final Color TEXT_COLOR = Color.WHITE;
@@ -52,7 +56,7 @@ public class WordleRectangle {
 		Rectangle rect = new Rectangle(x * RECTANGLE_SIZE, y * RECTANGLE_SIZE, RECTANGLE_SIZE, RECTANGLE_SIZE);
 		rect.setFill(STARTING_COLOR);
 		rect.setStroke(BORDER_STROKE_COLOR);
-		rect.setStrokeType(StrokeType.INSIDE);
+		rect.setStrokeType(INSIDE_STROKE);
 		return rect;
 	}
 	
@@ -64,7 +68,7 @@ public class WordleRectangle {
 	private Text setupText() {
 		Text text = new Text();
 		text.setFill(TEXT_COLOR);
-		text.setFont(Font.font("Helvetica", FontWeight.BOLD, 15));
+		text.setFont(Font.font(FONT, FONT_WEIGHT, FONT_SIZE));
 		return text;
 	}
 	
