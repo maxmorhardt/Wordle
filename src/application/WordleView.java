@@ -48,6 +48,9 @@ public class WordleView {
 	private final int TITLE_TOP_MARGIN = 20;
 	private final int TITLE_BOTTOM_MARGIN = 10;
 	private final int LINE_BOTTOM_MARGIN = 30;
+	private final int TITLE_FONT_SIZE = 35;
+	private final String TITLE_FONT = "Helvetica";
+	private final FontWeight TITLE_FONT_WEIGHT = FontWeight.BOLD;
 	private final Color BACKGROUND_COLOR = Color.rgb(18,18,19);
 	private final Color LINE_COLOR = Color.rgb(54,54,56);
 	private final Color TEXT_COLOR = Color.WHITE;
@@ -64,6 +67,7 @@ public class WordleView {
 	private WordleController controller;
 	private boolean won;
 	private boolean lost;
+	private boolean hasSwitchedScenes;
 	
 	/**
 	 * Constructor
@@ -131,15 +135,6 @@ public class WordleView {
 		return scene;
 	}
 	
-	private Scene setupLossScene() {
-		Text lossText = new Text("You Lost");
-		
-		
-		
-		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT, BACKGROUND_COLOR);
-		return scene;
-	}
-	
 	/**
 	 * Creates the title in the GUI for the game
 	 * 
@@ -148,7 +143,7 @@ public class WordleView {
 	private Text setupTitle() {
 		Text title = new Text("WORDLE");
 		title.setFill(TEXT_COLOR);
-		title.setFont(Font.font("Helvetica", FontWeight.BOLD, 35));
+		title.setFont(Font.font(TITLE_FONT, TITLE_FONT_WEIGHT, TITLE_FONT_SIZE));
 		return title;
 	}
 	
@@ -355,6 +350,25 @@ public class WordleView {
 		}
 	}
 	
+	private void handleLoss() {
+		// Kinda a dumb solution to handling the call is step()
+		if (lost) {
+			lost = false;
+			
+			Text lostText = new Text("You Lost");
+			lostText.setFill(TEXT_COLOR);
+			lostText.setFont(Font.font(TITLE_FONT, TITLE_FONT_WEIGHT, 50));
+			
+			Text secretWord = new Text("The word was: " + controller.getSecretWord());
+			secretWord.setFill(TEXT_COLOR);
+			secretWord.setFont(Font.font(TITLE_FONT, TITLE_FONT_WEIGHT, TITLE_FONT_SIZE));
+			
+			root.getChildren().remove(2);
+			root.getChildren().addAll(lostText, secretWord);
+			VBox.setMargin(lostText, new Insets(100, 0, 60, 0));
+		}
+	}
+	
 	/**
 	 * What will be called in the game loop
 	 * 
@@ -363,7 +377,7 @@ public class WordleView {
 	private void step(int elapsedTime) {
 		updateLetters();
 		if (lost) {
-			root.getChildren().clear();
+			handleLoss();
 		}
 	}
 

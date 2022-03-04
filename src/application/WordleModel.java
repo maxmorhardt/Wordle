@@ -108,4 +108,13 @@ public class WordleModel {
 		return result;
 	}
 	
+	/**
+	 * Getter for the secret word when the player loses
+	 * 
+	 * @return secret word
+	 */
+	public String getSecretWord() {
+		return secretWord;
+	}
+	
 }

@@ -21,5 +21,8 @@ public class WordleController {
 	public String checkGuess(String guess) {
 		return model.checkGuess(guess);
 	}
-
+	
+	public String getSecretWord() {
+		return model.getSecretWord();
+	}
 }
