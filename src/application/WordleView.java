@@ -349,17 +349,14 @@ public class WordleView {
 		if (lost) {
 			lost = false;
 			
-			Text lostText = new Text("You Lost");
-			lostText.setFill(TEXT_COLOR);
-			lostText.setFont(Font.font(FONT, FONT_WEIGHT, 50));
-			
 			Text secretWord = new Text("The word was: " + controller.getSecretWord());
 			secretWord.setFill(TEXT_COLOR);
 			secretWord.setFont(Font.font(FONT, FONT_WEIGHT, TITLE_FONT_SIZE));
 			
-			root.getChildren().remove(2);
-			root.getChildren().addAll(lostText, secretWord);
-			VBox.setMargin(lostText, new Insets(100, 0, 60, 0));
+			// This will remove the GUI keyboard once it is complete
+			//root.getChildren().remove(3);
+			root.getChildren().add(secretWord);
+			VBox.setMargin(secretWord, new Insets(70, 0, 0, 0));
 		}
 	}
 	
@@ -370,17 +367,14 @@ public class WordleView {
 		if (won) {
 			won = false;
 			
-			Text congrats = new Text("Congratulations");
-			congrats.setFill(TEXT_COLOR);
-			congrats.setFont(Font.font(FONT, FONT_WEIGHT, TITLE_FONT_SIZE));
-			
 			Text youWon = new Text("You Won!");
 			youWon.setFill(TEXT_COLOR);
 			youWon.setFont(Font.font(FONT, FONT_WEIGHT, TITLE_FONT_SIZE));
 			
-			root.getChildren().remove(2);
-			root.getChildren().addAll(congrats, youWon);
-			VBox.setMargin(congrats, new Insets(100, 0, 60, 0));
+			// This will remove the GUI keyboard once it is complete
+			//root.getChildren().remove(3);
+			root.getChildren().add(youWon);
+			VBox.setMargin(youWon, new Insets(70, 0, 0, 0));
 		}
 	}
 	
