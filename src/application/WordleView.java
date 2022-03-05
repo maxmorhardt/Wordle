@@ -127,7 +127,7 @@ public class WordleView {
 
 		// Creates scene
 		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT, BACKGROUND_COLOR);
-		scene.getStylesheets().add("/resources/style.css"); // Add path constant
+		//scene.getStylesheets().add( getClass().getResource( "/resources/styles.css" ).toExternalForm() );; // Add path constant
 		return scene;
 	}
 	
