@@ -10,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -117,6 +118,7 @@ public class WordleView {
 		
 		// Sets up root to align all elements
 		root = new VBox();
+		root.setBackground(Background.EMPTY);
 		root.setAlignment(Pos.TOP_CENTER);
 		VBox.setMargin(title, new Insets(TITLE_TOP_MARGIN, 0, TITLE_BOTTOM_MARGIN, 0));
 		VBox.setMargin(line, new Insets(0, 0, LINE_BOTTOM_MARGIN, 0));
@@ -381,7 +383,7 @@ public class WordleView {
 			// This will remove the GUI keyboard once it is complete
 			//root.getChildren().remove(3);
 			Button playAgain = new Button("Play Again?");
-			playAgain.autosize();
+			
 			playAgain.setOnAction(value -> {
 				playAgain();
 			});
