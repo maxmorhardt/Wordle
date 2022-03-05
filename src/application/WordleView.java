@@ -30,6 +30,7 @@ import javafx.util.Duration;
 public class WordleView {
 
 	// Game scene attributes
+	// Reformat these so everything is grouped together logically
 	private final int FRAMES_PER_SECOND = 30;
 	private final int MILLISECOND_DELAY = 1000 / FRAMES_PER_SECOND;
 	private final int SCENE_WIDTH = 700;
@@ -89,7 +90,7 @@ public class WordleView {
 		Scene scene = setupMainScene();
 		handleKeyboardInput(scene);
 		
-		primaryStage.setTitle("Wordle Clone - Max Morhardt");
+		primaryStage.setTitle("Wordle Clone - Max Morhardt"); // Add constant
 		primaryStage.setScene(scene);
 		primaryStage.show();
 
@@ -118,14 +119,15 @@ public class WordleView {
 		
 		// Sets up root to align all elements
 		root = new VBox();
-		root.setBackground(Background.EMPTY);
-		root.setAlignment(Pos.TOP_CENTER);
+		root.setBackground(Background.EMPTY); // add constant
+		root.setAlignment(Pos.TOP_CENTER); // add constant
 		VBox.setMargin(title, new Insets(TITLE_TOP_MARGIN, 0, TITLE_BOTTOM_MARGIN, 0));
 		VBox.setMargin(line, new Insets(0, 0, LINE_BOTTOM_MARGIN, 0));
 		root.getChildren().addAll(title, line, grid);
 
 		// Creates scene
 		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT, BACKGROUND_COLOR);
+		scene.getStylesheets().add("/resources/style.css"); // Add path constant
 		return scene;
 	}
 	
@@ -135,7 +137,7 @@ public class WordleView {
 	 * @return title
 	 */
 	private Text setupTitle() {
-		Text title = new Text("WORDLE");
+		Text title = new Text("WORDLE"); // add constant
 		title.setFill(TEXT_COLOR);
 		title.setFont(Font.font(FONT, FONT_WEIGHT, TITLE_FONT_SIZE));
 		return title;
@@ -172,7 +174,7 @@ public class WordleView {
 			}
 		}
 		// Aligns the grid in the center and adds space between the rectangles
-		grid.setAlignment(Pos.CENTER);
+		grid.setAlignment(Pos.CENTER); // add constant
 		grid.setHgap(GRID_SPACING);
 		grid.setVgap(GRID_SPACING);
 		return grid;
@@ -303,9 +305,9 @@ public class WordleView {
 	private void updateRectangleColors(String guessResult) {
 		for (int i = 0; i < WORD_LENGTH; i++) {
 			WordleRectangle wr = gridWordleRectangles[i][guessCount];
-			if (guessResult.charAt(i) == 'G') {
+			if (guessResult.charAt(i) == 'G') { // Add char constant
 				wr.setRectFill(HIT_COLOR);
-			} else if (guessResult.charAt(i) == 'Y') {
+			} else if (guessResult.charAt(i) == 'Y') { // Add char constant
 				wr.setRectFill(CONTAINS_COLOR);
 			} else {
 				wr.setRectFill(MISS_COLOR);
@@ -332,7 +334,7 @@ public class WordleView {
 			// Check for win
 			if (guess.equals(controller.getSecretWord())) {
 				won = true;
-			} else if (guessCount == 5) {
+			} else if (guessCount == 5) { 
 				lost = true;
 			}
 			
@@ -348,20 +350,21 @@ public class WordleView {
 	 * Handles either a win or loss
 	 */
 	private void handleEndGame() {
+		Button playAgain = new Button("Play Again?"); // Add string constant
+		VBox.setMargin(playAgain, new Insets(50, 0, 0, 0));
+		playAgain.getStyleClass().add("button1");
 		// Kinda a dumb solution to handling the call is step()
 		if (won) {
 			
 			won = false;
 			
-			Text youWon = new Text("You Won!");
+			Text youWon = new Text("You Won!"); // Add string constant
 			youWon.setFill(TEXT_COLOR);
 			youWon.setFont(Font.font(FONT, FONT_WEIGHT, TITLE_FONT_SIZE));
-			VBox.setMargin(youWon, new Insets(70, 0, 50, 0));
+			VBox.setMargin(youWon, new Insets(70, 0, 0, 0)); // Add int constants
 			
 			// This will remove the GUI keyboard once it is complete
 			//root.getChildren().remove(3);
-			Button playAgain = new Button("Play Again?");
-			
 			playAgain.setOnAction(value -> {
 				playAgain();
 				root.getChildren().remove(youWon);
@@ -375,11 +378,10 @@ public class WordleView {
 			Text secretWord = new Text("The word was: " + controller.getSecretWord());
 			secretWord.setFill(TEXT_COLOR);
 			secretWord.setFont(Font.font(FONT, FONT_WEIGHT, TITLE_FONT_SIZE));
-			VBox.setMargin(secretWord, new Insets(70, 0, 50, 0));
+			VBox.setMargin(secretWord, new Insets(70, 0, 0, 0));
 			
 			// This will remove the GUI keyboard once it is complete
 			//root.getChildren().remove(3);
-			Button playAgain = new Button("Play Again?");
 			playAgain.setOnAction(value -> {
 				playAgain();
 				root.getChildren().remove(secretWord);
@@ -406,7 +408,7 @@ public class WordleView {
 	/**
 	 * What will be called in the game loop
 	 * 
-	 * @param elapsedTime
+	 * @param elapsed time
 	 */
 	private void step(int elapsedTime) {
 		updateLetters();
