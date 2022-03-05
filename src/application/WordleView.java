@@ -351,8 +351,8 @@ public class WordleView {
 	 */
 	private void handleEndGame() {
 		Button playAgain = new Button("Play Again?"); // Add string constant
+		
 		VBox.setMargin(playAgain, new Insets(50, 0, 0, 0));
-		playAgain.getStyleClass().add("button1");
 		// Kinda a dumb solution to handling the call is step()
 		if (won) {
 			
