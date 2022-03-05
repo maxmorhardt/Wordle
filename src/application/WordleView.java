@@ -397,7 +397,7 @@ public class WordleView {
 		guessCharacterList.clear();
 		guessCount = 0;
 		for (int i = 0; i < gridWordleRectangles.length; i++) {
-			for (int j = 0; j < gridWordleRectangles[i].length; i++) {
+			for (int j = 0; j < gridWordleRectangles[i].length; j++) {
 				gridWordleRectangles[i][j].reset();
 			}
 		}
