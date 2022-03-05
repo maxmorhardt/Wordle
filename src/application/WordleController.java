@@ -25,4 +25,9 @@ public class WordleController {
 	public String getSecretWord() {
 		return model.getSecretWord();
 	}
+	
+	public void pickNewWord() {
+		model.pickNewWord();
+	}
+	
 }

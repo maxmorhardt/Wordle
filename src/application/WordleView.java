@@ -127,7 +127,7 @@ public class WordleView {
 
 		// Creates scene
 		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT, BACKGROUND_COLOR);
-		scene.getStylesheets().add(getClass().getResource("resources/styles.css").toExternalForm()); // Add path constant
+		//scene.getStylesheets().add(getClass().getResource("resources/styles.css").toExternalForm()); // Add path constant
 		return scene;
 	}
 	
@@ -393,16 +393,28 @@ public class WordleView {
 	}
 	
 	/**
-	 * Allows the user to reset and play again
+	 * Resets the grid to have starting values
 	 */
-	private void playAgain() {
-		guessCharacterList.clear();
-		guessCount = 0;
+	private void resetGrid() {
 		for (int i = 0; i < gridWordleRectangles.length; i++) {
 			for (int j = 0; j < gridWordleRectangles[i].length; j++) {
 				gridWordleRectangles[i][j].reset();
 			}
 		}
+	}
+	
+	/**
+	 * Allows the user to reset and play again
+	 */
+	private void playAgain() {
+		// Clear the list
+		guessCharacterList.clear();
+		// Reset guess count
+		guessCount = 0;
+		// Pick a new word to guess
+		controller.pickNewWord();
+		// Reset the grid
+		resetGrid();
 	}
 	
 	/**

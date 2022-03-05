@@ -117,4 +117,10 @@ public class WordleModel {
 		return secretWord;
 	}
 	
+	/**
+	 * Picks a new word 
+	 */
+	public void pickNewWord() {
+		secretWord = getRandomWord();
+	}
 }
