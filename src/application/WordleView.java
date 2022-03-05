@@ -127,7 +127,8 @@ public class WordleView {
 
 		// Creates scene
 		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT, BACKGROUND_COLOR);
-		//scene.getStylesheets().add(getClass().getResource("resources/styles.css").toExternalForm()); // Add path constant
+		System.out.println();
+		//scene.getStylesheets().add("resources/style.css"); // Add path constant
 		return scene;
 	}
 	
@@ -351,7 +352,7 @@ public class WordleView {
 	 */
 	private void handleEndGame() {
 		Button playAgain = new Button("Play Again?"); // Add string constant
-		
+		//playAgain.getStyleClass().add("dark-blue");
 		VBox.setMargin(playAgain, new Insets(50, 0, 0, 0));
 		// Kinda a dumb solution to handling the call is step()
 		if (won) {
