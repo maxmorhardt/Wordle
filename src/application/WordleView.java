@@ -345,34 +345,12 @@ public class WordleView {
 	}
 	
 	/**
-	 * Removes grid and adds losing text
+	 * Handles either a win or loss
 	 */
-	private void handleLoss() {
+	private void handleEndGame() {
 		// Kinda a dumb solution to handling the call is step()
-		if (lost) {
-			lost = false;
-			
-			Text secretWord = new Text("The word was: " + controller.getSecretWord());
-			secretWord.setFill(TEXT_COLOR);
-			secretWord.setFont(Font.font(FONT, FONT_WEIGHT, TITLE_FONT_SIZE));
-			VBox.setMargin(secretWord, new Insets(70, 0, 50, 0));
-			
-			// This will remove the GUI keyboard once it is complete
-			//root.getChildren().remove(3);
-			Button playAgain = new Button("Play Again?");
-			playAgain.setOnAction(value -> {
-				playAgain();
-			});
-			
-			root.getChildren().addAll(secretWord, playAgain);
-		}
-	}
-	
-	/**
-	 * Removes grid and adds winning text
-	 */
-	private void handleWin() {
 		if (won) {
+			
 			won = false;
 			
 			Text youWon = new Text("You Won!");
@@ -386,9 +364,29 @@ public class WordleView {
 			
 			playAgain.setOnAction(value -> {
 				playAgain();
+				root.getChildren().remove(youWon);
+				root.getChildren().remove(playAgain);
 			});
 			
 			root.getChildren().addAll(youWon, playAgain);
+		} else if (lost) {
+			lost = false;
+			
+			Text secretWord = new Text("The word was: " + controller.getSecretWord());
+			secretWord.setFill(TEXT_COLOR);
+			secretWord.setFont(Font.font(FONT, FONT_WEIGHT, TITLE_FONT_SIZE));
+			VBox.setMargin(secretWord, new Insets(70, 0, 50, 0));
+			
+			// This will remove the GUI keyboard once it is complete
+			//root.getChildren().remove(3);
+			Button playAgain = new Button("Play Again?");
+			playAgain.setOnAction(value -> {
+				playAgain();
+				root.getChildren().remove(secretWord);
+				root.getChildren().remove(playAgain);
+			});
+			
+			root.getChildren().addAll(secretWord, playAgain);
 		}
 	}
 	
@@ -412,10 +410,8 @@ public class WordleView {
 	 */
 	private void step(int elapsedTime) {
 		updateLetters();
-		if (won) {
-			handleWin();
-		} else if (lost) {
-			handleLoss();
+		if (won || lost) {
+			handleEndGame();
 		}
 	}
 
