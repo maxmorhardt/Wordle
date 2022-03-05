@@ -111,4 +111,9 @@ public class WordleRectangle {
 		return rectWithText;
 	}
 	
+	public void reset() {
+		text.setText("");
+		rect.setFill(STARTING_COLOR);
+	}
+	
 }

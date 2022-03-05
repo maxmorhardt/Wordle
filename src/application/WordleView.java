@@ -8,6 +8,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -352,11 +353,16 @@ public class WordleView {
 			Text secretWord = new Text("The word was: " + controller.getSecretWord());
 			secretWord.setFill(TEXT_COLOR);
 			secretWord.setFont(Font.font(FONT, FONT_WEIGHT, TITLE_FONT_SIZE));
+			VBox.setMargin(secretWord, new Insets(70, 0, 50, 0));
 			
 			// This will remove the GUI keyboard once it is complete
 			//root.getChildren().remove(3);
-			root.getChildren().add(secretWord);
-			VBox.setMargin(secretWord, new Insets(70, 0, 0, 0));
+			Button playAgain = new Button("Play Again?");
+			playAgain.setOnAction(value -> {
+				playAgain();
+			});
+			
+			root.getChildren().addAll(secretWord, playAgain);
 		}
 	}
 	
@@ -370,11 +376,30 @@ public class WordleView {
 			Text youWon = new Text("You Won!");
 			youWon.setFill(TEXT_COLOR);
 			youWon.setFont(Font.font(FONT, FONT_WEIGHT, TITLE_FONT_SIZE));
+			VBox.setMargin(youWon, new Insets(70, 0, 50, 0));
 			
 			// This will remove the GUI keyboard once it is complete
 			//root.getChildren().remove(3);
-			root.getChildren().add(youWon);
-			VBox.setMargin(youWon, new Insets(70, 0, 0, 0));
+			Button playAgain = new Button("Play Again?");
+			playAgain.autosize();
+			playAgain.setOnAction(value -> {
+				playAgain();
+			});
+			
+			root.getChildren().addAll(youWon, playAgain);
+		}
+	}
+	
+	/**
+	 * Allows the user to reset and play again
+	 */
+	private void playAgain() {
+		guessCharacterList.clear();
+		guessCount = 0;
+		for (int i = 0; i < gridWordleRectangles.length; i++) {
+			for (int j = 0; j < gridWordleRectangles[i].length; i++) {
+				gridWordleRectangles[i][j].reset();
+			}
 		}
 	}
 	
