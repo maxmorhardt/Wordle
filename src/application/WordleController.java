@@ -14,8 +14,7 @@ public class WordleController {
 	}
 	
 	public boolean isInWordList(String guess) {
-		if (model.isInWordList(guess)) return true;
-		return false;
+		return model.isInWordList(guess);
 	}
 	
 	public String checkGuess(String guess) {
