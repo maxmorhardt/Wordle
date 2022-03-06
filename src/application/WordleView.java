@@ -94,7 +94,9 @@ public class WordleView {
 		// Variables for ending the game
 		won = false;
 		lost = false;
+		System.out.println("before");
 		keyboardHandler = new KeyboardHandler();
+		System.out.println("after");
 	}
 
 	/**
