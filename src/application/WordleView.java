@@ -75,6 +75,7 @@ public class WordleView {
 	private WordleController controller;
 	private boolean won;
 	private boolean lost;
+	private KeyboardHandler keyboardHandler;
 	
 	/**
 	 * Constructor
@@ -93,6 +94,7 @@ public class WordleView {
 		// Variables for ending the game
 		won = false;
 		lost = false;
+		keyboardHandler = new KeyboardHandler();
 	}
 
 	/**
@@ -102,7 +104,7 @@ public class WordleView {
 		// Create scene and display
 		System.out.println(controller.getSecretWord());
 		Scene scene = setupMainScene();
-		handleKeyboardInput(scene);
+		keyboardHandler.handleKeyboardInput(scene, guessCharacterList, won, lost);
 		
 		primaryStage.setTitle("Wordle Clone - Max Morhardt"); // Add constant
 		primaryStage.setScene(scene);
@@ -331,7 +333,7 @@ public class WordleView {
 	/**
 	 * Submits a guess to the controller to see if its valid
 	 */
-	private void submitGuess() {
+	public void submitGuess() {
 		// Convert list to string
 		String guess = "";
 		for (Character c : guessCharacterList) {
