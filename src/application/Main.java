@@ -15,8 +15,8 @@ public class Main extends Application {
 	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		WordleView wv = new WordleView();
-		wv.start(primaryStage);
+		WordleView wordleView = new WordleView();
+		wordleView.start(primaryStage);
 	}
 	
 	/**

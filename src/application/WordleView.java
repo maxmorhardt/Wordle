@@ -16,8 +16,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -34,13 +32,13 @@ public class WordleView {
 	private final int MILLISECOND_DELAY = 1000 / FRAMES_PER_SECOND;
 	private final int SCENE_WIDTH = 700;
 	private final int SCENE_HEIGHT = 775;
-	private final int GRID_SPACING = 20;
 	
 	// Game constants
 	private final int WORD_LENGTH = 5;
 	private final int NUM_GUESSES = 6;
 	
 	// Margin constants
+	private final int GRID_MARGIN = 20;
 	private final int LINE_STROKE_WIDTH = 2;
 	private final int LINE_BOTTOM_MARGIN = 30;
 	private final int TITLE_TOP_MARGIN = 20;
@@ -48,16 +46,19 @@ public class WordleView {
 	private final int WIN_LOSS_TOP_MARGIN = 50;
 	private final int PLAY_AGAIN_TOP_MARGIN = 40;
 	
+	// Position constants
 	private final Pos ROOT_POSITION = Pos.TOP_CENTER;
 	private final Pos GRID_POSITION = Pos.CENTER;
 	
+	// Text constants
+	private final String STAGE_TITLE_TEXT = "Wordle Clone - Max Morhardt";
 	private final String TITLE_NAME = "WORDLE";
 	private final String PLAY_AGAIN_TEXT = "Play again?";
 	private final String YOU_WON_TEXT = "You Won!";
-	private final int TITLE_FONT_SIZE = 35;
-	private final String FONT = "Helvetica";
-	private final Color TEXT_COLOR = Color.WHITE;
+	private final char HIT_CHAR = 'G';
+	private final char CONTAINS_CHAR = 'Y';
 	
+	// Color constants
 	private final Color SCENE_COLOR = Color.rgb(18,18,19);
 	private final Color LINE_COLOR = Color.rgb(54,54,56);
 	private final Color HIT_COLOR = Color.rgb(83,141,78);
@@ -65,7 +66,7 @@ public class WordleView {
 	private final Color MISS_COLOR = Color.rgb(58,58,60);
 	
 
-	// Instance variables
+	// Variables
 	private VBox root;
 	private WordleRectangle[][] gridWordleRectangles;
 	private List<Character> guessCharacterList;
@@ -73,7 +74,7 @@ public class WordleView {
 	private WordleController controller;
 	private boolean won;
 	private boolean lost;
-	private CSSHandler cssHandler;
+	private StyleHandler styleHandler;
 	
 	/**
 	 * Constructor
@@ -93,7 +94,7 @@ public class WordleView {
 		won = false;
 		lost = false;
 		
-		cssHandler = new CSSHandler();
+		styleHandler = new StyleHandler();
 	}
 
 	/**
@@ -105,7 +106,7 @@ public class WordleView {
 		Scene scene = setupMainScene();
 		handleKeyboardInput(scene);
 		
-		primaryStage.setTitle("Wordle Clone - Max Morhardt"); // Add constant
+		primaryStage.setTitle(STAGE_TITLE_TEXT);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 
@@ -152,8 +153,7 @@ public class WordleView {
 	 */
 	private Text setupTitle() {
 		Text title = new Text(TITLE_NAME);
-		title.setFill(TEXT_COLOR);
-		title.setFont(Font.font(FONT, TITLE_FONT_SIZE));
+		title.setStyle(styleHandler.getTitleStyle());
 		return title;
 	}
 	
@@ -189,8 +189,8 @@ public class WordleView {
 		}
 		// Aligns the grid in the center and adds space between the rectangles
 		grid.setAlignment(GRID_POSITION);
-		grid.setHgap(GRID_SPACING);
-		grid.setVgap(GRID_SPACING);
+		grid.setHgap(GRID_MARGIN);
+		grid.setVgap(GRID_MARGIN);
 		return grid;
 	}
 	
@@ -216,9 +216,9 @@ public class WordleView {
 	private void updateRectangleColors(String guessResult) {
 		for (int i = 0; i < WORD_LENGTH; i++) {
 			WordleRectangle wordleRect = gridWordleRectangles[i][guessCount];
-			if (guessResult.charAt(i) == 'G') { // Add char constant
+			if (guessResult.charAt(i) == HIT_CHAR) {
 				wordleRect.setRectFill(HIT_COLOR);
-			} else if (guessResult.charAt(i) == 'Y') { // Add char constant
+			} else if (guessResult.charAt(i) == CONTAINS_CHAR) {
 				wordleRect.setRectFill(CONTAINS_COLOR);
 			} else {
 				wordleRect.setRectFill(MISS_COLOR);
@@ -274,7 +274,7 @@ public class WordleView {
 	 */
 	private void handleEndGame() {
 		Button playAgain = new Button(PLAY_AGAIN_TEXT);
-		playAgain.setStyle(cssHandler.getPlayAgainButtonCSS());
+		playAgain.setStyle(styleHandler.getPlayAgainStyle());
 		VBox.setMargin(playAgain, new Insets(PLAY_AGAIN_TOP_MARGIN, 0, 0, 0));
 		// Kinda a dumb solution to handling the call is step()
 		if (won) {
@@ -282,9 +282,7 @@ public class WordleView {
 			won = false;
 			
 			Text youWon = new Text(YOU_WON_TEXT);
-			//youWon.setFill(TEXT_COLOR);
-			//youWon.setFont(Font.font(FONT, TITLE_FONT_SIZE));
-			youWon.setStyle(cssHandler.getWinLossTextCSS());
+			youWon.setStyle(styleHandler.getWinLossStyle());
 			VBox.setMargin(youWon, new Insets(WIN_LOSS_TOP_MARGIN, 0, 0, 0));
 			
 			// This will remove the GUI keyboard once it is complete
@@ -300,8 +298,7 @@ public class WordleView {
 			lost = false;
 			
 			Text secretWord = new Text("The word was: " + controller.getSecretWord());
-			secretWord.setFill(TEXT_COLOR);
-			secretWord.setFont(Font.font(FONT, TITLE_FONT_SIZE));
+			secretWord.setStyle(styleHandler.getWinLossStyle());
 			VBox.setMargin(secretWord, new Insets(WIN_LOSS_TOP_MARGIN, 0, 0, 0));
 			
 			// This will remove the GUI keyboard once it is complete

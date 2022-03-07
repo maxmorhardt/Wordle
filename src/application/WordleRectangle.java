@@ -89,7 +89,7 @@ public class WordleRectangle {
 	 * 
 	 * @param color
 	 */
-	public void setRectFill(Color color ) {
+	public void setRectFill(Color color) {
 		this.rect.setFill(color);
 	}
 	
@@ -111,6 +111,9 @@ public class WordleRectangle {
 		return rectWithText;
 	}
 	
+	/**
+	 * Resets the Wordle rectangle to its starting state
+	 */
 	public void reset() {
 		text.setText("");
 		rect.setFill(STARTING_COLOR);

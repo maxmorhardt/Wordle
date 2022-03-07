@@ -13,10 +13,13 @@ import java.util.Scanner;
  */
 public class WordleModel {
 	
-	// File name for the word list
-	private static final String WORD_LIST_PATH = "resources/word_list.txt";
+	// Constants
+	private final String WORD_LIST_PATH = "resources/word_list.txt";
+	private final char HIT_CHAR = 'G';
+	private final char CONTAINS_CHAR = 'Y';
+	private final char MISS_CHAR = 'X';
 	
-	// Instance variables
+	// Variables
 	private List<String> words;
 	private String secretWord;
 	
@@ -96,13 +99,13 @@ public class WordleModel {
 		for (int i = 0; i < guess.length(); i++) {
 			if (guess.charAt(i) == secretWord.charAt(i)) {
 				// G (Green): Correct character and place
-				result += "G";
+				result += HIT_CHAR;
 			} else if (secretWord.contains(String.valueOf(guess.charAt(i)))) {
 				// Y (Yellow): Correct character wrong place
-				result += "Y";
+				result += CONTAINS_CHAR;
 			} else {
 				// X (Gray): Character is not in the word
-				result += "X";
+				result += MISS_CHAR;
 			}
 		}
 		return result;
