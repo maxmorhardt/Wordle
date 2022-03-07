@@ -12,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -38,7 +39,7 @@ public class WordleView {
 	private final int NUM_GUESSES = 6;
 	
 	// Margin constants
-	private final int GRID_MARGIN = 20;
+	private final int GRID_MARGIN = 10;
 	private final int LINE_STROKE_WIDTH = 2;
 	private final int LINE_BOTTOM_MARGIN = 30;
 	private final int TITLE_TOP_MARGIN = 20;
@@ -133,13 +134,16 @@ public class WordleView {
 		// Sets up the grid for text and color to be displayed
 		GridPane grid = setupGrid();
 		
+		VBox keyboard = setupKeyboard();
+		
 		// Sets up root to align all elements
 		root = new VBox();
 		root.setBackground(Background.EMPTY);
 		root.setAlignment(ROOT_POSITION);
 		VBox.setMargin(title, new Insets(TITLE_TOP_MARGIN, 0, TITLE_BOTTOM_MARGIN, 0));
 		VBox.setMargin(line, new Insets(0, 0, LINE_BOTTOM_MARGIN, 0));
-		root.getChildren().addAll(title, line, grid);
+		VBox.setMargin(grid, new Insets(0, 0, 50, 0));
+		root.getChildren().addAll(title, line, grid, keyboard);
 
 		// Creates scene
 		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT, SCENE_COLOR);
@@ -192,6 +196,28 @@ public class WordleView {
 		grid.setHgap(GRID_MARGIN);
 		grid.setVgap(GRID_MARGIN);
 		return grid;
+	}
+	
+	private VBox setupKeyboard() {
+		char[][] keysInOrder = new char[][] {
+			{'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'},
+			{'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'},
+			{'Z', 'X', 'C', 'V', 'B', 'N', 'M'}
+		};
+		VBox keyboard = new VBox();
+		for (int i = 0; i < keysInOrder.length; i++) {
+			HBox keyboardRow = new HBox();
+			for (int j = 0; j < keysInOrder[i].length; j++) {
+				Button key = new Button("" + keysInOrder[i][j]);
+				keyboardRow.getChildren().add(key);
+				HBox.setMargin(key, new Insets(2, 2, 2, 2));
+			}
+			keyboardRow.setAlignment(Pos.CENTER);
+			keyboard.getChildren().add(keyboardRow);
+		}
+		// Aligns the grid in the center and adds space between the rectangles
+		keyboard.setAlignment(Pos.CENTER);
+		return keyboard;
 	}
 	
 	/**
