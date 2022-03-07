@@ -82,7 +82,7 @@ public class WordleModel {
 	 * @return if the guess is in the word list
 	 */
 	public boolean isInWordList(String guess) {
-		if (words.contains(guess)) {
+		if (words.contains(guess.toLowerCase())) {
 			return true;
 		}
 		return false;

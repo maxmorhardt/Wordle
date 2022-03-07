@@ -225,7 +225,7 @@ public class WordleView {
 				
 				keyboardButtons.get(i).add(key);
 				key.setOnAction(e -> {
-					if (guessCharacterList.size() < 5) guessCharacterList.add(key.getText().charAt(0));
+					if (guessCharacterList.size() < 5) guessCharacterList.add(Character.toLowerCase(key.getText().charAt(0)));
 				});
 				keyboardRow.getChildren().add(key);
 				HBox.setMargin(key, new Insets(2, 2, 2, 2));
