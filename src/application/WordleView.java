@@ -213,6 +213,7 @@ public class WordleView {
 			keyboardButtons.add(keys);
 			if (i == 2) {
 				Button enter = new Button("ENTER");
+				enter.setStyle(styleHandler.getStartingKeyStyle());
 				enter.setOnAction(e -> {
 					if (guessCharacterList.size() == 5) submitGuess();
 				});
@@ -222,7 +223,7 @@ public class WordleView {
 			}
 			for (int j = 0; j < keysInOrder[i].length; j++) {
 				Button key = new Button("" + keysInOrder[i][j]);
-				
+				key.setStyle(styleHandler.getStartingKeyStyle());
 				keyboardButtons.get(i).add(key);
 				key.setOnAction(e -> {
 					if (guessCharacterList.size() < 5) guessCharacterList.add(Character.toLowerCase(key.getText().charAt(0)));
@@ -233,6 +234,7 @@ public class WordleView {
 					int a = 27;  
 					char c = (char)a;  
 					Button delete = new Button("<-");
+					delete.setStyle(styleHandler.getStartingKeyStyle());
 					delete.setOnAction(e -> {
 						int finalIndex = guessCharacterList.size()-1;
 						if (guessCharacterList.size() > 0) guessCharacterList.remove(finalIndex);
@@ -282,6 +284,27 @@ public class WordleView {
 		}
 	}
 	
+	// This could be a lot more efficient
+	private void updateKeyboardColors(String guessResult) {
+		for (int i = 0; i < keyboardButtons.size(); i++) {
+			for (int j = 0; j < keyboardButtons.get(i).size(); j++) {
+				for (int k = 0; k < guessCharacterList.size(); k++) {
+					char curr = guessCharacterList.get(k);
+					Button currButton = keyboardButtons.get(i).get(j);
+					if (("" + curr).equals(currButton.getText().toLowerCase())) {
+						if (guessResult.charAt(k) == HIT_CHAR) {
+							currButton.setStyle(styleHandler.getHitKeyStyle());
+						} else if (guessResult.charAt(k) == CONTAINS_CHAR) {
+							currButton.setStyle(styleHandler.getContainsKeyStyle());
+						} else {
+							currButton.setStyle(styleHandler.getMissKeyStyle());
+						}
+					}
+				}
+			}
+		}
+	}
+	
 	/**
 	 * What will be called in the game loop
 	 * 
@@ -309,6 +332,7 @@ public class WordleView {
 		if (isValid) {
 			String guessResult = controller.checkGuess(guess);
 			updateRectangleColors(guessResult);
+			updateKeyboardColors(guessResult);
 			
 			// Check for win
 			if (guess.equals(controller.getSecretWord())) {
@@ -329,7 +353,6 @@ public class WordleView {
 	 * Handles either a win or loss
 	 */
 	private void handleEndGame() {
-		root.getChildren().remove(3);
 		Button playAgain = new Button(PLAY_AGAIN_TEXT);
 		playAgain.setStyle(styleHandler.getPlayAgainStyle());
 		VBox.setMargin(playAgain, new Insets(PLAY_AGAIN_TOP_MARGIN, 0, 0, 0));
