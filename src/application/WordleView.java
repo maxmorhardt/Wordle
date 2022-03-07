@@ -76,6 +76,7 @@ public class WordleView {
 	private boolean won;
 	private boolean lost;
 	private StyleHandler styleHandler;
+	private ArrayList<ArrayList<Button>> keyboardButtons;
 	
 	/**
 	 * Constructor
@@ -96,6 +97,7 @@ public class WordleView {
 		lost = false;
 		
 		styleHandler = new StyleHandler();
+		keyboardButtons = new ArrayList<ArrayList<Button>>();
 	}
 
 	/**
@@ -199,7 +201,7 @@ public class WordleView {
 	}
 	
 	private VBox setupKeyboard() {
-		char[][] keysInOrder = new char[][] {
+		Character[][] keysInOrder = new Character[][] {
 			{'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'},
 			{'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'},
 			{'Z', 'X', 'C', 'V', 'B', 'N', 'M'}
@@ -207,10 +209,38 @@ public class WordleView {
 		VBox keyboard = new VBox();
 		for (int i = 0; i < keysInOrder.length; i++) {
 			HBox keyboardRow = new HBox();
+			ArrayList<Button> keys = new ArrayList<>();
+			keyboardButtons.add(keys);
+			if (i == 2) {
+				Button enter = new Button("ENTER");
+				enter.setOnAction(e -> {
+					if (guessCharacterList.size() == 5) submitGuess();
+				});
+				keyboardButtons.get(i).add(enter);
+				keyboardRow.getChildren().add(enter);
+				HBox.setMargin(enter, new Insets(2, 2, 2, 2));
+			}
 			for (int j = 0; j < keysInOrder[i].length; j++) {
 				Button key = new Button("" + keysInOrder[i][j]);
+				
+				keyboardButtons.get(i).add(key);
+				key.setOnAction(e -> {
+					if (guessCharacterList.size() < 5) guessCharacterList.add(key.getText().charAt(0));
+				});
 				keyboardRow.getChildren().add(key);
 				HBox.setMargin(key, new Insets(2, 2, 2, 2));
+				if (i == 2 && j == 6) {
+					int a = 27;  
+					char c = (char)a;  
+					Button delete = new Button("<-");
+					delete.setOnAction(e -> {
+						int finalIndex = guessCharacterList.size()-1;
+						if (guessCharacterList.size() > 0) guessCharacterList.remove(finalIndex);
+					});
+					keyboardButtons.get(i).add(delete);
+					keyboardRow.getChildren().add(delete);
+					HBox.setMargin(delete, new Insets(2, 2, 2, 2));
+				}
 			}
 			keyboardRow.setAlignment(Pos.CENTER);
 			keyboard.getChildren().add(keyboardRow);
@@ -299,20 +329,18 @@ public class WordleView {
 	 * Handles either a win or loss
 	 */
 	private void handleEndGame() {
+		root.getChildren().remove(3);
 		Button playAgain = new Button(PLAY_AGAIN_TEXT);
 		playAgain.setStyle(styleHandler.getPlayAgainStyle());
 		VBox.setMargin(playAgain, new Insets(PLAY_AGAIN_TOP_MARGIN, 0, 0, 0));
 		// Kinda a dumb solution to handling the call is step()
 		if (won) {
-			
 			won = false;
 			
 			Text youWon = new Text(YOU_WON_TEXT);
 			youWon.setStyle(styleHandler.getWinLossStyle());
 			VBox.setMargin(youWon, new Insets(WIN_LOSS_TOP_MARGIN, 0, 0, 0));
 			
-			// This will remove the GUI keyboard once it is complete
-			//root.getChildren().remove(3);
 			playAgain.setOnAction(value -> {
 				playAgain();
 				root.getChildren().remove(youWon);
@@ -362,6 +390,7 @@ public class WordleView {
 		controller.pickNewWord();
 		// Reset the grid
 		resetGrid();
+		root.getChildren().add(setupKeyboard());
 	}
 	
 	/**
