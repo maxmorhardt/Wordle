@@ -7,13 +7,21 @@ package application;
  */
 public class CSSHandler {
 	
-	final String plauAgainButtonCSS = "-fx-background-color: #121213; \n"
+	final String PLAY_AGAIN_BUTTON_CSS = "-fx-background-color: #121213; \n"
 			+ "-fx-text-fill: #ffffff; \n"
 			+ "-fx-border-color: #3a3a3c; \n"
-			+ "-fx-font: 15px Helvetica;";
+			+ "-fx-font: 17px Helvetica;";
+	
+	final String WIN_LOSS_TEXT_CSS = "-fx-fill: #ffffff; \n"
+			+ "-fx-font: 40px Helvetica; \n"
+			+ "-fx-font-weight: bold;";
 	
 	public String getPlayAgainButtonCSS() {
-		return plauAgainButtonCSS;
+		return PLAY_AGAIN_BUTTON_CSS;
+	}
+	
+	public String getWinLossTextCSS() {
+		return WIN_LOSS_TEXT_CSS;
 	}
 	
 }

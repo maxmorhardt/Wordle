@@ -123,4 +123,5 @@ public class WordleModel {
 	public void pickNewWord() {
 		secretWord = getRandomWord();
 	}
+	
 }
