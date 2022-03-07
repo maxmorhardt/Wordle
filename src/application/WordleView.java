@@ -44,7 +44,6 @@ public class WordleView {
 	private final int LINE_BOTTOM_MARGIN = 30;
 	private final int TITLE_FONT_SIZE = 35;
 	private final String FONT = "Helvetica";
-	private final FontWeight FONT_WEIGHT = FontWeight.BOLD;
 	private final Color BACKGROUND_COLOR = Color.rgb(18,18,19);
 	private final Color LINE_COLOR = Color.rgb(54,54,56);
 	private final Color TEXT_COLOR = Color.WHITE;
@@ -141,7 +140,7 @@ public class WordleView {
 	private Text setupTitle() {
 		Text title = new Text("WORDLE"); // add constant
 		title.setFill(TEXT_COLOR);
-		title.setFont(Font.font(FONT, FONT_WEIGHT, TITLE_FONT_SIZE));
+		title.setFont(Font.font(FONT, TITLE_FONT_SIZE));
 		return title;
 	}
 	
@@ -187,11 +186,11 @@ public class WordleView {
 	 */
 	private void updateLetters() {
 		for (int i = 0; i < WORD_LENGTH; i++) {
-			WordleRectangle wr = gridWordleRectangles[i][guessCount];
+			WordleRectangle wordleRect = gridWordleRectangles[i][guessCount];
 			if (guessCharacterList.size() - 1 < i) {
-				wr.setText("");
+				wordleRect.setText("");
 			} else {
-				wr.setText(("" + guessCharacterList.get(i)).toUpperCase());
+				wordleRect.setText(("" + guessCharacterList.get(i)).toUpperCase());
 			}
 		}
 	}
@@ -203,13 +202,13 @@ public class WordleView {
 	 */
 	private void updateRectangleColors(String guessResult) {
 		for (int i = 0; i < WORD_LENGTH; i++) {
-			WordleRectangle wr = gridWordleRectangles[i][guessCount];
+			WordleRectangle wordleRect = gridWordleRectangles[i][guessCount];
 			if (guessResult.charAt(i) == 'G') { // Add char constant
-				wr.setRectFill(HIT_COLOR);
+				wordleRect.setRectFill(HIT_COLOR);
 			} else if (guessResult.charAt(i) == 'Y') { // Add char constant
-				wr.setRectFill(CONTAINS_COLOR);
+				wordleRect.setRectFill(CONTAINS_COLOR);
 			} else {
-				wr.setRectFill(MISS_COLOR);
+				wordleRect.setRectFill(MISS_COLOR);
 			}
 		}
 	}
@@ -259,7 +258,7 @@ public class WordleView {
 			
 			Text youWon = new Text("You Won!"); // Add string constant
 			youWon.setFill(TEXT_COLOR);
-			youWon.setFont(Font.font(FONT, FONT_WEIGHT, TITLE_FONT_SIZE));
+			youWon.setFont(Font.font(FONT, TITLE_FONT_SIZE));
 			VBox.setMargin(youWon, new Insets(70, 0, 0, 0)); // Add int constants
 			
 			// This will remove the GUI keyboard once it is complete
@@ -276,7 +275,7 @@ public class WordleView {
 			
 			Text secretWord = new Text("The word was: " + controller.getSecretWord());
 			secretWord.setFill(TEXT_COLOR);
-			secretWord.setFont(Font.font(FONT, FONT_WEIGHT, TITLE_FONT_SIZE));
+			secretWord.setFont(Font.font(FONT, TITLE_FONT_SIZE));
 			VBox.setMargin(secretWord, new Insets(70, 0, 0, 0));
 			
 			// This will remove the GUI keyboard once it is complete
