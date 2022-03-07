@@ -7,7 +7,7 @@ package application;
  */
 public class CSSHandler {
 	
-	final String plauAgainButtonCSS = "    -fx-background-color: \n"
+	final String plauAgainButtonCSS = "-fx-background-color: \n"
 			+ "        #090a0c,\n"
 			+ "        linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),\n"
 			+ "        linear-gradient(#20262b, #191d22),\n"

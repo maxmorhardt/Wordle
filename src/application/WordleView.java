@@ -52,20 +52,6 @@ public class WordleView {
 	private final Color CONTAINS_COLOR = Color.rgb(181,159,59);
 	private final Color MISS_COLOR = Color.rgb(58,58,60);
 	
-	final String css = "    -fx-background-color: \n"
-			+ "        #090a0c,\n"
-			+ "        linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),\n"
-			+ "        linear-gradient(#20262b, #191d22),\n"
-			+ "        radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));\n"
-			+ "    -fx-background-radius: 5,4,3,5;\n"
-			+ "    -fx-background-insets: 0,1,2,0;\n"
-			+ "    -fx-text-fill: white;\n"
-			+ "    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );\n"
-			+ "    -fx-font-family: \"Arial\";\n"
-			+ "    -fx-text-fill: linear-gradient(white, #d0d0d0);\n"
-			+ "    -fx-font-size: 12px;\n"
-			+ "    -fx-padding: 10 20 10 20;";
-	
 
 	// Instance variables
 	private VBox root;
@@ -75,7 +61,7 @@ public class WordleView {
 	private WordleController controller;
 	private boolean won;
 	private boolean lost;
-	private KeyboardHandler keyboardHandler;
+	private CSSHandler cssHandler;
 	
 	/**
 	 * Constructor
@@ -94,9 +80,8 @@ public class WordleView {
 		// Variables for ending the game
 		won = false;
 		lost = false;
-		System.out.println("before");
-		keyboardHandler = new KeyboardHandler();
-		System.out.println("after");
+		
+		cssHandler = new CSSHandler();
 	}
 
 	/**
@@ -106,7 +91,7 @@ public class WordleView {
 		// Create scene and display
 		System.out.println(controller.getSecretWord());
 		Scene scene = setupMainScene();
-		keyboardHandler.handleKeyboardInput(scene, guessCharacterList, won, lost);
+		handleKeyboardInput(scene);
 		
 		primaryStage.setTitle("Wordle Clone - Max Morhardt"); // Add constant
 		primaryStage.setScene(scene);
@@ -195,6 +180,152 @@ public class WordleView {
 		grid.setHgap(GRID_SPACING);
 		grid.setVgap(GRID_SPACING);
 		return grid;
+	}
+	
+	/**
+	 * Updates the letters on the GUI
+	 */
+	private void updateLetters() {
+		for (int i = 0; i < WORD_LENGTH; i++) {
+			WordleRectangle wr = gridWordleRectangles[i][guessCount];
+			if (guessCharacterList.size() - 1 < i) {
+				wr.setText("");
+			} else {
+				wr.setText(("" + guessCharacterList.get(i)).toUpperCase());
+			}
+		}
+	}
+	
+	/**
+	 * Updates the colors of the rectangle
+	 * 
+	 * @param guess result
+	 */
+	private void updateRectangleColors(String guessResult) {
+		for (int i = 0; i < WORD_LENGTH; i++) {
+			WordleRectangle wr = gridWordleRectangles[i][guessCount];
+			if (guessResult.charAt(i) == 'G') { // Add char constant
+				wr.setRectFill(HIT_COLOR);
+			} else if (guessResult.charAt(i) == 'Y') { // Add char constant
+				wr.setRectFill(CONTAINS_COLOR);
+			} else {
+				wr.setRectFill(MISS_COLOR);
+			}
+		}
+	}
+	
+	/**
+	 * Submits a guess to the controller to see if its valid
+	 */
+	public void submitGuess() {
+		// Convert list to string
+		String guess = "";
+		for (Character c : guessCharacterList) {
+			guess += c;
+		}
+		
+		// If the guess is valid update GUI with result and add a guess
+		boolean isValid = controller.isInWordList(guess);
+		if (isValid) {
+			String guessResult = controller.checkGuess(guess);
+			updateRectangleColors(guessResult);
+			
+			// Check for win
+			if (guess.equals(controller.getSecretWord())) {
+				won = true;
+			} else if (guessCount == 5) { 
+				lost = true;
+			}
+			
+			// Dont increment if game is over
+			if (!won && !lost) {
+				guessCharacterList.clear();
+				guessCount++;
+			}
+		}
+	}
+	
+	/**
+	 * Handles either a win or loss
+	 */
+	private void handleEndGame() {
+		Button playAgain = new Button("Play Again?"); // Add string constant
+		playAgain.setStyle(cssHandler.getPlayAgainButtonCSS());
+		VBox.setMargin(playAgain, new Insets(50, 0, 0, 0));
+		// Kinda a dumb solution to handling the call is step()
+		if (won) {
+			
+			won = false;
+			
+			Text youWon = new Text("You Won!"); // Add string constant
+			youWon.setFill(TEXT_COLOR);
+			youWon.setFont(Font.font(FONT, FONT_WEIGHT, TITLE_FONT_SIZE));
+			VBox.setMargin(youWon, new Insets(70, 0, 0, 0)); // Add int constants
+			
+			// This will remove the GUI keyboard once it is complete
+			//root.getChildren().remove(3);
+			playAgain.setOnAction(value -> {
+				playAgain();
+				root.getChildren().remove(youWon);
+				root.getChildren().remove(playAgain);
+			});
+			
+			root.getChildren().addAll(youWon, playAgain);
+		} else if (lost) {
+			lost = false;
+			
+			Text secretWord = new Text("The word was: " + controller.getSecretWord());
+			secretWord.setFill(TEXT_COLOR);
+			secretWord.setFont(Font.font(FONT, FONT_WEIGHT, TITLE_FONT_SIZE));
+			VBox.setMargin(secretWord, new Insets(70, 0, 0, 0));
+			
+			// This will remove the GUI keyboard once it is complete
+			//root.getChildren().remove(3);
+			playAgain.setOnAction(value -> {
+				playAgain();
+				root.getChildren().remove(secretWord);
+				root.getChildren().remove(playAgain);
+			});
+			
+			root.getChildren().addAll(secretWord, playAgain);
+		}
+	}
+	
+	/**
+	 * Resets the grid to have starting values
+	 */
+	private void resetGrid() {
+		for (int i = 0; i < gridWordleRectangles.length; i++) {
+			for (int j = 0; j < gridWordleRectangles[i].length; j++) {
+				gridWordleRectangles[i][j].reset();
+			}
+		}
+	}
+	
+	/**
+	 * Allows the user to reset and play again
+	 */
+	private void playAgain() {
+		// Clear the list
+		guessCharacterList.clear();
+		// Reset guess count
+		guessCount = 0;
+		// Pick a new word to guess
+		controller.pickNewWord();
+		// Reset the grid
+		resetGrid();
+	}
+	
+	/**
+	 * What will be called in the game loop
+	 * 
+	 * @param elapsed time
+	 */
+	private void step(int elapsedTime) {
+		updateLetters();
+		if (won || lost) {
+			handleEndGame();
+		}
 	}
 	
 	/**
@@ -297,153 +428,6 @@ public class WordleView {
 				}
 			}
 		});
-	}
-	
-	
-	/**
-	 * Updates the letters on the GUI
-	 */
-	private void updateLetters() {
-		for (int i = 0; i < WORD_LENGTH; i++) {
-			WordleRectangle wr = gridWordleRectangles[i][guessCount];
-			if (guessCharacterList.size() - 1 < i) {
-				wr.setText("");
-			} else {
-				wr.setText(("" + guessCharacterList.get(i)).toUpperCase());
-			}
-		}
-	}
-	
-	/**
-	 * Updates the colors of the rectangle
-	 * 
-	 * @param guess result
-	 */
-	private void updateRectangleColors(String guessResult) {
-		for (int i = 0; i < WORD_LENGTH; i++) {
-			WordleRectangle wr = gridWordleRectangles[i][guessCount];
-			if (guessResult.charAt(i) == 'G') { // Add char constant
-				wr.setRectFill(HIT_COLOR);
-			} else if (guessResult.charAt(i) == 'Y') { // Add char constant
-				wr.setRectFill(CONTAINS_COLOR);
-			} else {
-				wr.setRectFill(MISS_COLOR);
-			}
-		}
-	}
-	
-	/**
-	 * Submits a guess to the controller to see if its valid
-	 */
-	public void submitGuess() {
-		// Convert list to string
-		String guess = "";
-		for (Character c : guessCharacterList) {
-			guess += c;
-		}
-		
-		// If the guess is valid update GUI with result and add a guess
-		boolean isValid = controller.isInWordList(guess);
-		if (isValid) {
-			String guessResult = controller.checkGuess(guess);
-			updateRectangleColors(guessResult);
-			
-			// Check for win
-			if (guess.equals(controller.getSecretWord())) {
-				won = true;
-			} else if (guessCount == 5) { 
-				lost = true;
-			}
-			
-			// Dont increment if game is over
-			if (!won && !lost) {
-				guessCharacterList.clear();
-				guessCount++;
-			}
-		}
-	}
-	
-	/**
-	 * Handles either a win or loss
-	 */
-	private void handleEndGame() {
-		Button playAgain = new Button("Play Again?"); // Add string constant
-		playAgain.setStyle(css);
-		VBox.setMargin(playAgain, new Insets(50, 0, 0, 0));
-		// Kinda a dumb solution to handling the call is step()
-		if (won) {
-			
-			won = false;
-			
-			Text youWon = new Text("You Won!"); // Add string constant
-			youWon.setFill(TEXT_COLOR);
-			youWon.setFont(Font.font(FONT, FONT_WEIGHT, TITLE_FONT_SIZE));
-			VBox.setMargin(youWon, new Insets(70, 0, 0, 0)); // Add int constants
-			
-			// This will remove the GUI keyboard once it is complete
-			//root.getChildren().remove(3);
-			playAgain.setOnAction(value -> {
-				playAgain();
-				root.getChildren().remove(youWon);
-				root.getChildren().remove(playAgain);
-			});
-			
-			root.getChildren().addAll(youWon, playAgain);
-		} else if (lost) {
-			lost = false;
-			
-			Text secretWord = new Text("The word was: " + controller.getSecretWord());
-			secretWord.setFill(TEXT_COLOR);
-			secretWord.setFont(Font.font(FONT, FONT_WEIGHT, TITLE_FONT_SIZE));
-			VBox.setMargin(secretWord, new Insets(70, 0, 0, 0));
-			
-			// This will remove the GUI keyboard once it is complete
-			//root.getChildren().remove(3);
-			playAgain.setOnAction(value -> {
-				playAgain();
-				root.getChildren().remove(secretWord);
-				root.getChildren().remove(playAgain);
-			});
-			
-			root.getChildren().addAll(secretWord, playAgain);
-		}
-	}
-	
-	/**
-	 * Resets the grid to have starting values
-	 */
-	private void resetGrid() {
-		for (int i = 0; i < gridWordleRectangles.length; i++) {
-			for (int j = 0; j < gridWordleRectangles[i].length; j++) {
-				gridWordleRectangles[i][j].reset();
-			}
-		}
-	}
-	
-	/**
-	 * Allows the user to reset and play again
-	 */
-	private void playAgain() {
-		// Clear the list
-		guessCharacterList.clear();
-		// Reset guess count
-		guessCount = 0;
-		// Pick a new word to guess
-		controller.pickNewWord();
-		// Reset the grid
-		resetGrid();
-	}
-	
-	/**
-	 * What will be called in the game loop
-	 * 
-	 * @param elapsed time
-	 */
-	private void step(int elapsedTime) {
-		updateLetters();
-		if (won || lost) {
-			handleEndGame();
-		}
 	}
 
 }
