@@ -44,8 +44,8 @@ public class WordleView {
 	private final int LINE_BOTTOM_MARGIN = 30;
 	private final int TITLE_TOP_MARGIN = 20;
 	private final int TITLE_BOTTOM_MARGIN = 10;
-	private final int WIN_LOSS_TOP_MARGIN = 50;
-	private final int PLAY_AGAIN_TOP_MARGIN = 40;
+	private final int WIN_LOSS_TOP_MARGIN = 30;
+	private final int PLAY_AGAIN_TOP_MARGIN = 30;
 	
 	// Position constants
 	private final Pos ROOT_POSITION = Pos.TOP_CENTER;
@@ -105,10 +105,9 @@ public class WordleView {
 	 */
 	public void start(Stage primaryStage) {
 		// Create scene and display
-		System.out.println(controller.getSecretWord());
+		//System.out.println(controller.getSecretWord());
 		Scene scene = setupMainScene();
 		handleKeyboardInput(scene);
-		
 		primaryStage.setTitle(STAGE_TITLE_TEXT);
 		primaryStage.setScene(scene);
 		primaryStage.show();
@@ -144,7 +143,7 @@ public class WordleView {
 		root.setAlignment(ROOT_POSITION);
 		VBox.setMargin(title, new Insets(TITLE_TOP_MARGIN, 0, TITLE_BOTTOM_MARGIN, 0));
 		VBox.setMargin(line, new Insets(0, 0, LINE_BOTTOM_MARGIN, 0));
-		VBox.setMargin(grid, new Insets(0, 0, 50, 0));
+		VBox.setMargin(grid, new Insets(0, 0, 30, 0));
 		root.getChildren().addAll(title, line, grid, keyboard);
 
 		// Creates scene
@@ -231,9 +230,7 @@ public class WordleView {
 				keyboardRow.getChildren().add(key);
 				HBox.setMargin(key, new Insets(2, 2, 2, 2));
 				if (i == 2 && j == 6) {
-					int a = 27;  
-					char c = (char)a;  
-					Button delete = new Button("<-");
+					Button delete = new Button("<=");
 					delete.setStyle(styleHandler.getStartingKeyStyle());
 					delete.setOnAction(e -> {
 						int finalIndex = guessCharacterList.size()-1;
@@ -247,7 +244,6 @@ public class WordleView {
 			keyboardRow.setAlignment(Pos.CENTER);
 			keyboard.getChildren().add(keyboardRow);
 		}
-		// Aligns the grid in the center and adds space between the rectangles
 		keyboard.setAlignment(Pos.CENTER);
 		return keyboard;
 	}
@@ -401,6 +397,15 @@ public class WordleView {
 		}
 	}
 	
+	private void resetKeyboard() {
+		for (int i = 0; i < keyboardButtons.size(); i++) {
+			for (int j = 0; j < keyboardButtons.get(i).size(); j++) {
+				Button curr = keyboardButtons.get(i).get(j);
+				curr.setStyle(styleHandler.getStartingKeyStyle());
+			}
+		}
+	}
+	
 	/**
 	 * Allows the user to reset and play again
 	 */
@@ -413,7 +418,7 @@ public class WordleView {
 		controller.pickNewWord();
 		// Reset the grid
 		resetGrid();
-		root.getChildren().add(setupKeyboard());
+		resetKeyboard();
 	}
 	
 	/**
