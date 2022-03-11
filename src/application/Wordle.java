@@ -1,9 +1,14 @@
 package application;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -26,7 +31,10 @@ import javafx.util.Duration;
  * 
  * @author Max Morhardt
  */
-public class WordleView {
+public class Wordle extends Application {
+	
+	// Path to the word list file
+	private final String WORD_LIST_PATH = "resources/word_list.txt";
 
 	// Game scene constants
 	private final int FRAMES_PER_SECOND = 30;
@@ -40,12 +48,13 @@ public class WordleView {
 	
 	// Margin constants
 	private final int GRID_MARGIN = 10;
-	private final int LINE_STROKE_WIDTH = 2;
 	private final int LINE_BOTTOM_MARGIN = 30;
 	private final int TITLE_TOP_MARGIN = 20;
 	private final int TITLE_BOTTOM_MARGIN = 10;
 	private final int WIN_LOSS_TOP_MARGIN = 30;
 	private final int PLAY_AGAIN_TOP_MARGIN = 30;
+	
+	private final int LINE_STROKE_WIDTH = 2;
 	
 	// Position constants
 	private final Pos ROOT_POSITION = Pos.TOP_CENTER;
@@ -58,6 +67,7 @@ public class WordleView {
 	private final String YOU_WON_TEXT = "You Won!";
 	private final char HIT_CHAR = 'G';
 	private final char CONTAINS_CHAR = 'Y';
+	private final char MISS_CHAR = 'X';
 	
 	// Color constants
 	private final Color SCENE_COLOR = Color.rgb(18,18,19);
@@ -67,45 +77,129 @@ public class WordleView {
 	private final Color MISS_COLOR = Color.rgb(58,58,60);
 	
 
-	// Variables
+	// Game variables
+	private List<String> words;
+	private String secretWord;
+	private int guessCount;
+	private boolean won;
+	private boolean lost;
+	
+	// View variables
 	private VBox root;
 	private WordleRectangle[][] gridWordleRectangles;
 	private List<Character> guessCharacterList;
-	private int guessCount;
-	private WordleController controller;
-	private boolean won;
-	private boolean lost;
 	private StyleHandler styleHandler;
 	private ArrayList<ArrayList<Button>> keyboardButtons;
 	
 	/**
 	 * Constructor
 	 */
-	public WordleView() {
-		// Root for the scene
-		root = new VBox();
-		// Wordle rectangles within the grid pane
-		gridWordleRectangles = new WordleRectangle[WORD_LENGTH][NUM_GUESSES];
+	public Wordle() {
+		// Words from the word list
+		words = scanList(WORD_LIST_PATH);
+		// Secret word to guess
+		secretWord = getRandomWord();
 		// List of all the characters that are in the current guesses
 		guessCharacterList = new ArrayList<>();
 		// Number of guesses attempted
 		guessCount = 0;
-		// Controller
-		controller = new WordleController();
 		// Variables for ending the game
 		won = false;
 		lost = false;
-		
+		// Root for the scene
+		root = new VBox();
+		// Wordle rectangles within the grid pane
+		gridWordleRectangles = new WordleRectangle[WORD_LENGTH][NUM_GUESSES];
+		// Handles the styles of most buttons and text
 		styleHandler = new StyleHandler();
+		// Contains all buttons on the keyboard
 		keyboardButtons = new ArrayList<ArrayList<Button>>();
+	}
+	
+	/**
+	 * Reads a file into a list
+	 * 
+	 * @param file name
+	 * @return list of strings
+	 */
+	private List<String> scanList(String fileName) {
+		List<String> list = new ArrayList<>();
+		try {
+			Scanner in = new Scanner(new File(fileName));
+			while (in.hasNext()) {
+				list.add(in.next());
+			}
+			in.close();
+		} catch (FileNotFoundException e) {
+			System.out.println("The file was not found");
+			e.printStackTrace();
+		}
+		assert list != null;
+		return list;
+	}
+	
+	/**
+	 * Gets a random number within a range
+	 * 
+	 * @param min
+	 * @param max
+	 * @return int within a range
+	 */
+	private int getRandomNumber(int min, int max) {
+	    return (int) ((Math.random() * (max - min)) + min);
+	}
+	
+	/**
+	 * Gets a random word from the word list
+	 * 
+	 * @return random word
+	 */
+	private String getRandomWord() {
+		int index = getRandomNumber(0, words.size()-1);
+		return words.get(index);
+	}
+	
+	/**
+	 * Validates a guess from the user based on if its in the word list
+	 * 
+	 * @return if the guess is in the word list
+	 */
+	private boolean isInWordList(String guess) {
+		if (words.contains(guess.toLowerCase())) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Checks a guess and returns a string of the result
+	 * 
+	 * @param guess
+	 * @return string of corresponding hits, misses, and in the word values
+	 */
+	private String checkGuess(String guess) {
+		String result = "";
+		for (int i = 0; i < guess.length(); i++) {
+			if (guess.charAt(i) == secretWord.charAt(i)) {
+				// G (Green): Correct character and place
+				result += HIT_CHAR;
+			} else if (secretWord.contains(String.valueOf(guess.charAt(i)))) {
+				// Y (Yellow): Correct character wrong place
+				result += CONTAINS_CHAR;
+			} else {
+				// X (Gray): Character is not in the word
+				result += MISS_CHAR;
+			}
+		}
+		return result;
 	}
 
 	/**
 	 * Main entry point
 	 */
+	@Override
 	public void start(Stage primaryStage) {
 		// Create scene and display
-		//System.out.println(controller.getSecretWord());
 		Scene scene = setupMainScene();
 		handleKeyboardInput(scene);
 		primaryStage.setTitle(STAGE_TITLE_TEXT);
@@ -128,20 +222,18 @@ public class WordleView {
 	private Scene setupMainScene() {
 		// Adds text for the title of the game
 		Text title = setupTitle();
-		
 		// Line between the title and grid
 		Line line = setupLine();
-		
 		// Sets up the grid for text and color to be displayed
 		GridPane grid = setupGrid();
-		
+		// Creates GUI keyboard
 		VBox keyboard = setupKeyboard();
-		
 		// Sets up root to align all elements
 		root = new VBox();
 		root.setBackground(Background.EMPTY);
 		root.setAlignment(ROOT_POSITION);
 		VBox.setMargin(title, new Insets(TITLE_TOP_MARGIN, 0, TITLE_BOTTOM_MARGIN, 0));
+		VBox.setMargin(line, new Insets(0, 0, LINE_BOTTOM_MARGIN, 0));
 		VBox.setMargin(line, new Insets(0, 0, LINE_BOTTOM_MARGIN, 0));
 		VBox.setMargin(grid, new Insets(0, 0, 30, 0));
 		root.getChildren().addAll(title, line, grid, keyboard);
@@ -158,7 +250,7 @@ public class WordleView {
 	 */
 	private Text setupTitle() {
 		Text title = new Text(TITLE_NAME);
-		title.setStyle(styleHandler.getTitleStyle());
+		title.setStyle(styleHandler.TITLE_STYLE);
 		return title;
 	}
 	
@@ -199,6 +291,11 @@ public class WordleView {
 		return grid;
 	}
 	
+	/**
+	 * Creates the GUI keyboard
+	 * 
+	 * @return VBox with HBox's of buttons
+	 */
 	private VBox setupKeyboard() {
 		Character[][] keysInOrder = new Character[][] {
 			{'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'},
@@ -212,7 +309,7 @@ public class WordleView {
 			keyboardButtons.add(keys);
 			if (i == 2) {
 				Button enter = new Button("ENTER");
-				enter.setStyle(styleHandler.getStartingKeyStyle());
+				enter.setStyle(styleHandler.STARTING_KEY_STYLE);
 				enter.setOnAction(e -> {
 					if (guessCharacterList.size() == 5) submitGuess();
 				});
@@ -222,7 +319,7 @@ public class WordleView {
 			}
 			for (int j = 0; j < keysInOrder[i].length; j++) {
 				Button key = new Button("" + keysInOrder[i][j]);
-				key.setStyle(styleHandler.getStartingKeyStyle());
+				key.setStyle(styleHandler.STARTING_KEY_STYLE);
 				keyboardButtons.get(i).add(key);
 				key.setOnAction(e -> {
 					if (guessCharacterList.size() < 5) guessCharacterList.add(Character.toLowerCase(key.getText().charAt(0)));
@@ -231,7 +328,7 @@ public class WordleView {
 				HBox.setMargin(key, new Insets(2, 2, 2, 2));
 				if (i == 2 && j == 6) {
 					Button delete = new Button("<=");
-					delete.setStyle(styleHandler.getStartingKeyStyle());
+					delete.setStyle(styleHandler.STARTING_KEY_STYLE);
 					delete.setOnAction(e -> {
 						int finalIndex = guessCharacterList.size()-1;
 						if (guessCharacterList.size() > 0) guessCharacterList.remove(finalIndex);
@@ -289,11 +386,11 @@ public class WordleView {
 					Button currButton = keyboardButtons.get(i).get(j);
 					if (("" + curr).equals(currButton.getText().toLowerCase())) {
 						if (guessResult.charAt(k) == HIT_CHAR) {
-							currButton.setStyle(styleHandler.getHitKeyStyle());
+							currButton.setStyle(styleHandler.HIT_KEY_STYLE);
 						} else if (guessResult.charAt(k) == CONTAINS_CHAR) {
-							currButton.setStyle(styleHandler.getContainsKeyStyle());
+							currButton.setStyle(styleHandler.CONTAINS_KEY_STYLE);
 						} else {
-							currButton.setStyle(styleHandler.getMissKeyStyle());
+							currButton.setStyle(styleHandler.MIS_KEY_STYLE);
 						}
 					}
 				}
@@ -324,14 +421,14 @@ public class WordleView {
 		}
 		
 		// If the guess is valid update GUI with result and add a guess
-		boolean isValid = controller.isInWordList(guess);
+		boolean isValid = isInWordList(guess);
 		if (isValid) {
-			String guessResult = controller.checkGuess(guess);
+			String guessResult = checkGuess(guess);
 			updateRectangleColors(guessResult);
 			updateKeyboardColors(guessResult);
 			
 			// Check for win
-			if (guess.equals(controller.getSecretWord())) {
+			if (guess.equals(secretWord)) {
 				won = true;
 			} else if (guessCount == NUM_GUESSES-1) { 
 				lost = true;
@@ -349,41 +446,33 @@ public class WordleView {
 	 * Handles either a win or loss
 	 */
 	private void handleEndGame() {
+		// Add the play again button
 		Button playAgain = new Button(PLAY_AGAIN_TEXT);
-		playAgain.setStyle(styleHandler.getPlayAgainStyle());
+		playAgain.setStyle(styleHandler.PLAY_AGAIN_STYLE);
 		VBox.setMargin(playAgain, new Insets(PLAY_AGAIN_TOP_MARGIN, 0, 0, 0));
-		// Kinda a dumb solution to handling the call is step()
+		// Add text for a win or loss
+		Text endGameText = new Text();
+		endGameText.setStyle(styleHandler.WIN_LOSS_STYLE);
+		VBox.setMargin(endGameText, new Insets(WIN_LOSS_TOP_MARGIN, 0, 0, 0));
+		// Set action for the play again button
+		playAgain.setOnAction(value -> {
+			playAgain();
+			root.getChildren().remove(endGameText);
+			root.getChildren().remove(playAgain);
+		});
 		if (won) {
-			won = false;
-			
-			Text youWon = new Text(YOU_WON_TEXT);
-			youWon.setStyle(styleHandler.getWinLossStyle());
-			VBox.setMargin(youWon, new Insets(WIN_LOSS_TOP_MARGIN, 0, 0, 0));
-			
-			playAgain.setOnAction(value -> {
-				playAgain();
-				root.getChildren().remove(youWon);
-				root.getChildren().remove(playAgain);
-			});
-			
-			root.getChildren().addAll(youWon, playAgain);
+			// Reset win status
+			won = false;	
+			// Add text incidicating a win
+			endGameText.setText(YOU_WON_TEXT);
 		} else if (lost) {
+			// Reset lost status
 			lost = false;
 			
-			Text secretWord = new Text("The word was: " + controller.getSecretWord());
-			secretWord.setStyle(styleHandler.getWinLossStyle());
-			VBox.setMargin(secretWord, new Insets(WIN_LOSS_TOP_MARGIN, 0, 0, 0));
-			
-			// This will remove the GUI keyboard once it is complete
-			//root.getChildren().remove(3);
-			playAgain.setOnAction(value -> {
-				playAgain();
-				root.getChildren().remove(secretWord);
-				root.getChildren().remove(playAgain);
-			});
-			
-			root.getChildren().addAll(secretWord, playAgain);
+			// Indicate what the word was to the user
+			endGameText.setText("The word was: " + this.secretWord);
 		}
+		root.getChildren().addAll(endGameText, playAgain);
 	}
 	
 	/**
@@ -397,11 +486,14 @@ public class WordleView {
 		}
 	}
 	
+	/**
+	 * Resets the keyboard to its starting values
+	 */
 	private void resetKeyboard() {
 		for (int i = 0; i < keyboardButtons.size(); i++) {
 			for (int j = 0; j < keyboardButtons.get(i).size(); j++) {
 				Button curr = keyboardButtons.get(i).get(j);
-				curr.setStyle(styleHandler.getStartingKeyStyle());
+				curr.setStyle(styleHandler.STARTING_KEY_STYLE);
 			}
 		}
 	}
@@ -415,9 +507,10 @@ public class WordleView {
 		// Reset guess count
 		guessCount = 0;
 		// Pick a new word to guess
-		controller.pickNewWord();
+		secretWord = getRandomWord();
 		// Reset the grid
 		resetGrid();
+		// Resets the GUI keyboard
 		resetKeyboard();
 	}
 	
@@ -521,6 +614,15 @@ public class WordleView {
 				}
 			}
 		});
+	}
+	
+	/**
+	 * Main method
+	 * 
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		launch(args);
 	}
 
 }
