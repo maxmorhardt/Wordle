@@ -53,18 +53,24 @@ public class Wordle extends Application {
 	private final int TITLE_BOTTOM_MARGIN = 10;
 	private final int WIN_LOSS_TOP_MARGIN = 30;
 	private final int PLAY_AGAIN_TOP_MARGIN = 30;
+	private final int KEYBOARD_MARGIN = 2;
 	
+	// Line stroke width constant
 	private final int LINE_STROKE_WIDTH = 2;
 	
 	// Position constants
 	private final Pos ROOT_POSITION = Pos.TOP_CENTER;
 	private final Pos GRID_POSITION = Pos.CENTER;
+	private final Pos KEYBOARD_ALIGNMENT = Pos.CENTER;
 	
 	// Text constants
 	private final String STAGE_TITLE_TEXT = "Wordle Clone - Max Morhardt";
 	private final String TITLE_NAME = "WORDLE";
 	private final String PLAY_AGAIN_TEXT = "Play again?";
 	private final String YOU_WON_TEXT = "You Won!";
+	private final String ENTER_TEXT = "ENTER";
+	private final String DELETE_TEXT = "<=";
+	private final String FILE_SCAN_ERROR_TEXT = "The file was not found";
 	private final char HIT_CHAR = 'G';
 	private final char CONTAINS_CHAR = 'Y';
 	private final char MISS_CHAR = 'X';
@@ -76,7 +82,10 @@ public class Wordle extends Application {
 	private final Color CONTAINS_COLOR = Color.rgb(181,159,59);
 	private final Color MISS_COLOR = Color.rgb(58,58,60);
 	
-
+	// Index constants
+	private final int THIRD_ROW_INDEX = 2;
+	private final int THIRD_ROW_LAST_KEY_INDEX = 6;
+	
 	// Game variables
 	private List<String> words;
 	private String secretWord;
@@ -131,7 +140,7 @@ public class Wordle extends Application {
 			}
 			in.close();
 		} catch (FileNotFoundException e) {
-			System.out.println("The file was not found");
+			System.out.println(FILE_SCAN_ERROR_TEXT);
 			e.printStackTrace();
 		}
 		assert list != null;
@@ -205,7 +214,6 @@ public class Wordle extends Application {
 		primaryStage.setTitle(STAGE_TITLE_TEXT);
 		primaryStage.setScene(scene);
 		primaryStage.show();
-
 		// Game loop
 		KeyFrame frame = new KeyFrame(Duration.millis(MILLISECOND_DELAY), e -> step(MILLISECOND_DELAY));
 		Timeline animation = new Timeline();
@@ -237,7 +245,6 @@ public class Wordle extends Application {
 		VBox.setMargin(line, new Insets(0, 0, LINE_BOTTOM_MARGIN, 0));
 		VBox.setMargin(grid, new Insets(0, 0, 30, 0));
 		root.getChildren().addAll(title, line, grid, keyboard);
-
 		// Creates scene
 		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT, SCENE_COLOR);
 		return scene;
@@ -297,7 +304,8 @@ public class Wordle extends Application {
 	 * @return VBox with HBox's of buttons
 	 */
 	private VBox setupKeyboard() {
-		Character[][] keysInOrder = new Character[][] {
+		// All the characters in a keyboard in order
+		final Character[][] keysInOrder = new Character[][] {
 			{'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'},
 			{'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'},
 			{'Z', 'X', 'C', 'V', 'B', 'N', 'M'}
@@ -307,27 +315,31 @@ public class Wordle extends Application {
 			HBox keyboardRow = new HBox();
 			ArrayList<Button> keys = new ArrayList<>();
 			keyboardButtons.add(keys);
-			if (i == 2) {
-				Button enter = new Button("ENTER");
+			// Add the enter button as soon as the loop reaches the 3rd row
+			if (i == THIRD_ROW_INDEX) {
+				Button enter = new Button(ENTER_TEXT);
 				enter.setStyle(styleHandler.STARTING_KEY_STYLE);
 				enter.setOnAction(e -> {
-					if (guessCharacterList.size() == 5) submitGuess();
+					if (guessCharacterList.size() == WORD_LENGTH) submitGuess();
 				});
 				keyboardButtons.get(i).add(enter);
 				keyboardRow.getChildren().add(enter);
-				HBox.setMargin(enter, new Insets(2, 2, 2, 2));
+				HBox.setMargin(enter, new Insets(KEYBOARD_MARGIN, KEYBOARD_MARGIN, KEYBOARD_MARGIN, KEYBOARD_MARGIN));
 			}
+			//
 			for (int j = 0; j < keysInOrder[i].length; j++) {
+				// Creates a key for the keyboard
 				Button key = new Button("" + keysInOrder[i][j]);
 				key.setStyle(styleHandler.STARTING_KEY_STYLE);
 				keyboardButtons.get(i).add(key);
 				key.setOnAction(e -> {
-					if (guessCharacterList.size() < 5) guessCharacterList.add(Character.toLowerCase(key.getText().charAt(0)));
+					if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add(Character.toLowerCase(key.getText().charAt(0)));
 				});
 				keyboardRow.getChildren().add(key);
-				HBox.setMargin(key, new Insets(2, 2, 2, 2));
-				if (i == 2 && j == 6) {
-					Button delete = new Button("<=");
+				HBox.setMargin(key, new Insets(KEYBOARD_MARGIN, KEYBOARD_MARGIN, KEYBOARD_MARGIN, KEYBOARD_MARGIN));
+				// Adds the delete button to the end of the keyboard
+				if (i == THIRD_ROW_INDEX && j == THIRD_ROW_LAST_KEY_INDEX) {
+					Button delete = new Button(DELETE_TEXT);
 					delete.setStyle(styleHandler.STARTING_KEY_STYLE);
 					delete.setOnAction(e -> {
 						int finalIndex = guessCharacterList.size()-1;
@@ -335,13 +347,13 @@ public class Wordle extends Application {
 					});
 					keyboardButtons.get(i).add(delete);
 					keyboardRow.getChildren().add(delete);
-					HBox.setMargin(delete, new Insets(2, 2, 2, 2));
+					HBox.setMargin(delete, new Insets(KEYBOARD_MARGIN, KEYBOARD_MARGIN, KEYBOARD_MARGIN, KEYBOARD_MARGIN));
 				}
 			}
-			keyboardRow.setAlignment(Pos.CENTER);
+			keyboardRow.setAlignment(KEYBOARD_ALIGNMENT);
 			keyboard.getChildren().add(keyboardRow);
 		}
-		keyboard.setAlignment(Pos.CENTER);
+		keyboard.setAlignment(KEYBOARD_ALIGNMENT);
 		return keyboard;
 	}
 	
@@ -377,7 +389,11 @@ public class Wordle extends Application {
 		}
 	}
 	
-	// This could be a lot more efficient
+	/**
+	 * Updates the keyboard colors after a guess
+	 * 
+	 * @param guess result
+	 */
 	private void updateKeyboardColors(String guessResult) {
 		for (int i = 0; i < keyboardButtons.size(); i++) {
 			for (int j = 0; j < keyboardButtons.get(i).size(); j++) {
@@ -419,21 +435,18 @@ public class Wordle extends Application {
 		for (Character c : guessCharacterList) {
 			guess += c;
 		}
-		
 		// If the guess is valid update GUI with result and add a guess
 		boolean isValid = isInWordList(guess);
 		if (isValid) {
 			String guessResult = checkGuess(guess);
 			updateRectangleColors(guessResult);
 			updateKeyboardColors(guessResult);
-			
-			// Check for win
+			// Check for end game
 			if (guess.equals(secretWord)) {
 				won = true;
 			} else if (guessCount == NUM_GUESSES-1) { 
 				lost = true;
 			}
-			
 			// Dont increment if game is over
 			if (!won && !lost) {
 				guessCharacterList.clear();
