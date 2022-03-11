@@ -47,7 +47,8 @@ public class Wordle extends Application {
 	private final int NUM_GUESSES = 6;
 	
 	// Margin constants
-	private final int GRID_MARGIN = 10;
+	private final int GRID_BOTTOM_MARGIN = 30;
+	private final int GRID_SPACING = 10;
 	private final int LINE_BOTTOM_MARGIN = 30;
 	private final int TITLE_TOP_MARGIN = 20;
 	private final int TITLE_BOTTOM_MARGIN = 10;
@@ -243,7 +244,7 @@ public class Wordle extends Application {
 		VBox.setMargin(title, new Insets(TITLE_TOP_MARGIN, 0, TITLE_BOTTOM_MARGIN, 0));
 		VBox.setMargin(line, new Insets(0, 0, LINE_BOTTOM_MARGIN, 0));
 		VBox.setMargin(line, new Insets(0, 0, LINE_BOTTOM_MARGIN, 0));
-		VBox.setMargin(grid, new Insets(0, 0, 30, 0));
+		VBox.setMargin(grid, new Insets(0, 0, GRID_BOTTOM_MARGIN, 0));
 		root.getChildren().addAll(title, line, grid, keyboard);
 		// Creates scene
 		Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT, SCENE_COLOR);
@@ -293,8 +294,8 @@ public class Wordle extends Application {
 		}
 		// Aligns the grid in the center and adds space between the rectangles
 		grid.setAlignment(GRID_POSITION);
-		grid.setHgap(GRID_MARGIN);
-		grid.setVgap(GRID_MARGIN);
+		grid.setHgap(GRID_SPACING);
+		grid.setVgap(GRID_SPACING);
 		return grid;
 	}
 	
@@ -539,85 +540,85 @@ public class Wordle extends Application {
 				if (!won || !lost) {
 					switch (event.getCode()) {
 					case A: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('a');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('a');
 						break;
 					case B: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('b');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('b');
 						break;
 					case C: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('c');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('c');
 						break;
 					case D: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('d');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('d');
 						break;
 					case E: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('e');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('e');
 						break;
 					case F: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('f');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('f');
 						break;
 					case G: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('g');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('g');
 						break;
 					case H: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('h');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('h');
 						break;
 					case I: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('i');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('i');
 						break;
 					case J: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('j');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('j');
 						break;
 					case K: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('k');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('k');
 						break;
 					case L: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('l');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('l');
 						break;
 					case M: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('m');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('m');
 						break;
 					case N: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('n');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('n');
 						break;
 					case O: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('o');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('o');
 						break;
 					case P: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('p');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('p');
 						break;
 					case Q: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('q');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('q');
 						break;
 					case R: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('r');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('r');
 						break;
 					case S: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('s');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('s');
 						break;
 					case T: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('t');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('t');
 						break;
 					case U: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('u');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('u');
 						break;
 					case V: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('v');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('v');
 						break;
 					case W: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('w');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('w');
 						break;
 					case X: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('x');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('x');
 						break;
 					case Y: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('y');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('y');
 						break;
 					case Z: 
-						if (guessCharacterList.size() < 5) guessCharacterList.add('z');
+						if (guessCharacterList.size() < WORD_LENGTH) guessCharacterList.add('z');
 						break;
 					case ENTER: 
-						if (guessCharacterList.size() == 5) submitGuess();
+						if (guessCharacterList.size() == WORD_LENGTH) submitGuess();
 						break;
 					case BACK_SPACE: 
 						int finalIndex = guessCharacterList.size()-1;
