@@ -396,12 +396,14 @@ public class Wordle extends Application {
 	 * @param guess result
 	 */
 	private void updateKeyboardColors(String guessResult) {
+		// Goes through each key in the keyboard
 		for (int i = 0; i < keyboardButtons.size(); i++) {
 			for (int j = 0; j < keyboardButtons.get(i).size(); j++) {
+				// Compares each key to the guess
 				for (int k = 0; k < guessCharacterList.size(); k++) {
-					char curr = guessCharacterList.get(k);
+					char currChar = guessCharacterList.get(k);
 					Button currButton = keyboardButtons.get(i).get(j);
-					if (("" + curr).equals(currButton.getText().toLowerCase())) {
+					if (("" + currChar).equals(currButton.getText().toLowerCase())) {
 						if (guessResult.charAt(k) == HIT_CHAR) {
 							currButton.setStyle(styleHandler.HIT_KEY_STYLE);
 						} else if (guessResult.charAt(k) == CONTAINS_CHAR) {
@@ -430,15 +432,14 @@ public class Wordle extends Application {
 	/**
 	 * Submits a guess to the controller to see if its valid
 	 */
-	public void submitGuess() {
+	private void submitGuess() {
 		// Convert list to string
 		String guess = "";
 		for (Character c : guessCharacterList) {
 			guess += c;
 		}
 		// If the guess is valid update GUI with result and add a guess
-		boolean isValid = isInWordList(guess);
-		if (isValid) {
+		if (isInWordList(guess)) {
 			String guessResult = checkGuess(guess);
 			updateRectangleColors(guessResult);
 			updateKeyboardColors(guessResult);
