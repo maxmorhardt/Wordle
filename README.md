@@ -1,7 +1,7 @@
 # Wordle
 Author: Max Morhardt
 
-![test](./assets/game_preview.png?raw=true "Title")
+![](./assets/game_preview.png? =250x250)
 
 A Recreation of the game Wordle in Java. This program uses JavaFX for the UI. This version of the game does not follow the once per day rule, rather picks a random word from the original version's word list.
 
