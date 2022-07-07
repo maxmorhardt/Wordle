@@ -211,6 +211,7 @@ public class Wordle extends Application {
 	public void start(Stage primaryStage) {
 		// Create scene and display
 		Scene scene = setupMainScene();
+		System.out.println(secretWord);
 		handleKeyboardInput(scene);
 		primaryStage.setTitle(STAGE_TITLE_TEXT);
 		primaryStage.setScene(scene);
